@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UntiyUtils", "UntiyUtils.csproj", "{D4C742C7-B096-275B-8E98-7EAE78CDB887}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitiyUtils.Sample", "UnitiyUtils.Sample.csproj", "{1469E9AE-AA00-A05B-AAFB-F4D454345EB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4C742C7-B096-275B-8E98-7EAE78CDB887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4C742C7-B096-275B-8E98-7EAE78CDB887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4C742C7-B096-275B-8E98-7EAE78CDB887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4C742C7-B096-275B-8E98-7EAE78CDB887}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1469E9AE-AA00-A05B-AAFB-F4D454345EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1469E9AE-AA00-A05B-AAFB-F4D454345EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1469E9AE-AA00-A05B-AAFB-F4D454345EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1469E9AE-AA00-A05B-AAFB-F4D454345EB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
