@@ -225,7 +225,7 @@ namespace Vun.UnityUtils
         /// <param name="sampleCount">The number of sample item needed</param>
         /// <param name="buffer">Container for sample items. <c>Clear()</c> will be called for this</param>
         /// <param name="random">The random number generator. If null, a temporary System.Random instance will be created</param>
-        public static void QuickSample<T>(this ICollection<T> collection, int sampleCount, ICollection<T> buffer, Random random = null)
+        public static void QuickSample<T>(this ICollection<T> collection, int sampleCount, ICollection<T> buffer, Random random)
         {
             if (sampleCount > collection.Count)
             {
@@ -295,7 +295,7 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Join items in <c>collection</c> into a <c>string</c>
         /// </summary>
-        public static string JoinToString<T>(this ICollection<T> collection, string seperator = ", ", string start = "[", string end = "]")
+        public static string JoinToString<T>(this ICollection<T> collection, string separator = ", ", string start = "[", string end = "]")
         {
             var builder = new StringBuilder();
             builder.Append(start);
@@ -307,7 +307,7 @@ namespace Vun.UnityUtils
 
                 if (i < collection.Count - 1)
                 {
-                    builder.Append(seperator);
+                    builder.Append(separator);
                 }
 
                 i++;
@@ -315,6 +315,15 @@ namespace Vun.UnityUtils
 
             builder.Append(end);
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Quickly remove item at <c>index</c> by move the last item in list to <c>index</c>
+        /// </summary>
+        public static void FastRemoveAt<T>(this List<T> list, int index)
+        {
+            (list[index], list[^1]) = (list[^1], list[index]);
+            list.RemoveAt(list.Count - 1);
         }
     }
 }

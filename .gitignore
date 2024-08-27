@@ -7,3 +7,5 @@ UserSettings/
 GlobalSuppressions.cs
 obj/
 /.idea
+/Assets/Playground
+Assets/Playground.meta
