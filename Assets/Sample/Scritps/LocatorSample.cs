@@ -22,11 +22,15 @@ namespace Vun.UnityUtils.sample
             yield return new WaitForSeconds(3);
 
             FillSample.Instance.MoveRandomBodies(1, TargetPositionX / 2);
+
+            ICollection<int> array = new int[] { 1, 2, 3 };
+            var buffer = new List<int>();
+            array.Add(2);
         }
 
         private void TestSample()
         {
-            var list = new List<int>() { 1, 2, 3 };
+            var list = new List<int> { 1, 2, 3 };
             var buffer = new List<int>();
 
             for (int i = 0; i < 10; ++i)

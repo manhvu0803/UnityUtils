@@ -11,7 +11,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Parse an JSON-style array string to a real array using Unity's JsonUtility
+        /// Parse an JSON-style array string to an <see cref="Array"/> using Unity <see cref="JsonUtility"/>
         /// </summary>
         /// <param name="json">JSON-style array string ("[1, 2, 3, 4]", .etc)</param>
         public static T[] ArrayFromJson<T>(string json)
@@ -24,8 +24,8 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Get all values of enum <c>T</c>
         /// </summary>
-        /// <returns>Array of values of <c>T</c>. Never null</returns>
-        public static T[] GetAllValues<T>() where T : Enum
+        /// <returns>Array of values of <c>T</c>. Never <c>null</c></returns>
+        public static T[] GetValues<T>() where T : Enum
         {
             if (Enum.GetValues(typeof(T)) is T[] values)
             {

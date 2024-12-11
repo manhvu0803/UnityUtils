@@ -13,39 +13,55 @@ namespace Vun.UnityUtils
         /// </summary>
         /// <param name="collection">The sample collection</param>
         /// <param name="sampleCount">The number of sample item needed</param>
-        /// <param name="buffer">Container for sample items. <c>Clear()</c> will be called for this</param>
+        /// <param name="buffer">Container for sample items.
+        /// Do not use fixed size and read-only collections, <see cref="ICollection{T}.Clear"/> and <see cref="ICollection{T}.Add"/> will be called for this
+        /// </param>
         public static void QuickSample<T>(this ICollection<T> collection, int sampleCount, ICollection<T> buffer)
+        {
+            collection.QuickSample<T, ICollection<T>, ICollection<T>>(sampleCount, buffer);
+        }
+
+        /// <param name="buffer">Container for sample items.
+        /// Do not use fixed size and read-only collections, <see cref="ICollection{T}.Clear"/> and <see cref="ICollection{T}.Add"/> will be called for this
+        /// </param>
+        public static void QuickSample<T, TCollection, TBuffer>(this TCollection collection, int sampleCount, TBuffer buffer)
+            where TCollection : ICollection<T>
+            where TBuffer : ICollection<T>
         {
             if (sampleCount > collection.Count)
             {
                 throw new ArgumentException($"The number of sample ({sampleCount}) is bigger than collection size ({collection.Count})");
             }
-
+        
             buffer.Clear();
             var i = 0;
-
+        
             foreach (var item in collection)
             {
                 var takeChance = (float)(sampleCount - buffer.Count) / (collection.Count - i);
-
+        
                 if (UnityEngine.Random.Range(0f, 1f) <= takeChance)
                 {
                     buffer.Add(item);
                 }
-
+        
                 if (buffer.Count >= sampleCount)
                 {
                     break;
                 }
-
+        
                 ++i;
             }
         }
 
         /// <summary>
-        /// Optimized version of <c>QuickSample</c> for <c>List</c> (avoid <c>GetEnumerator</c>)
+        /// Optimized version of <c>QuickSample</c> for <c>List</c> that avoids <c>GetEnumerator</c>.
+        /// To avoid boxing with <c>struct</c> use <see cref="QuickSample{T,TCollection,TBuffer}(TCollection,int,TBuffer)"/>
         /// </summary>
-        public static void QuickSample<T>(this List<T> list, int sampleCount, ICollection<T> buffer)
+        /// <param name="buffer">Container for sample items.
+        /// Do not use fixed size and read-only collections, <see cref="ICollection{T}.Clear"/> and <see cref="ICollection{T}.Add"/> will be called for this
+        /// </param>
+        public static void QuickSample<T>(this IList<T> list, int sampleCount, ICollection<T> buffer)
         {
             if (sampleCount > list.Count)
             {
@@ -54,7 +70,7 @@ namespace Vun.UnityUtils
 
             buffer.Clear();
 
-            for (int i = 0; i < list.Count; ++i)
+            for (var i = 0; i < list.Count; ++i)
             {
                 var takeChance = (float)(sampleCount - buffer.Count) / (list.Count - i);
 
@@ -70,34 +86,6 @@ namespace Vun.UnityUtils
             }
         }
 
-        /// <summary>
-        /// Optimized version of <c>QuickSample</c> for arrays (avoid <c>GetEnumerator</c>)
-        /// </summary>
-        public static void QuickSample<T>(this T[] array, int sampleCount, ICollection<T> buffer)
-        {
-            if (sampleCount > array.Length)
-            {
-                throw new ArgumentException($"The number of sample ({sampleCount}) is bigger than array size ({array.Length})");
-            }
-
-            buffer.Clear();
-
-            for (int i = 0; i < array.Length - sampleCount + buffer.Count; ++i)
-            {
-                var takeChance = (float)(sampleCount - buffer.Count) / (array.Length - i);
-
-                if (UnityEngine.Random.Range(0f, 1f) <= takeChance)
-                {
-                    buffer.Add(array[i]);
-                }
-
-                if (buffer.Count >= sampleCount)
-                {
-                    break;
-                }
-            }
-        }
-        
         #endregion
 
         #region Array buffer and UnityEngine.Random
@@ -147,7 +135,7 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Optimized version of <c>QuickSample</c> for <c>List</c> (avoid <c>GetEnumerator</c>)
         /// </summary>
-        public static void QuickSample<T>(this List<T> list, int sampleCount, T[] buffer, int writeIndex = 0)
+        public static void QuickSample<T>(this IList<T> list, int sampleCount, T[] buffer, int writeIndex = 0)
         {
             if (sampleCount > list.Count)
             {
