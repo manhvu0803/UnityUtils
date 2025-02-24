@@ -9,3 +9,12 @@ obj/
 /.idea
 /Assets/Playground
 Assets/Playground.meta
+UnityUtils.sln
+Assets/Plugins/Sirenix
+Assets/Plugins/Sirenix.meta
+ProjectSettings
+Assets/Settings
+Packages
+Assets/Plugins.meta
+Assets/UniversalRenderPipelineGlobalSettings.asset
+Assets/UniversalRenderPipelineGlobalSettings.asset.meta
