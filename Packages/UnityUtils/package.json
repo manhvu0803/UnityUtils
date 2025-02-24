@@ -1,0 +1,16 @@
+{
+  "name": "com.vun.unity-utils",
+  "version": "1.0.0",
+  "displayName": "Unity Utils",
+  "description": "A collections of C# and Unity utility functions and classes",
+  "unity": "2021.3",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "keywords": [
+    "utilities"
+  ],
+  "author": {
+    "name": "Manh Vu Nguyen",
+    "email": "manhvu.nguyen53@gmail.com"
+  }
+}

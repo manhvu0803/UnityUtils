@@ -1,14 +1,10 @@
 {
-    "name": "UntiyUtils.Editor",
+    "name": "Vun.UntiyUtils",
     "rootNamespace": "",
-    "references": [
-        "GUID:72db0867edeeb074284606b98f32cdb4"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

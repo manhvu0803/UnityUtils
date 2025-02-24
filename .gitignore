@@ -14,7 +14,8 @@ Assets/Plugins/Sirenix
 Assets/Plugins/Sirenix.meta
 ProjectSettings
 Assets/Settings
-Packages
 Assets/Plugins.meta
 Assets/UniversalRenderPipelineGlobalSettings.asset
 Assets/UniversalRenderPipelineGlobalSettings.asset.meta
+Packages/manifest.json
+Packages/packages-lock.json
