@@ -41,14 +41,23 @@ namespace Vun.UnityUtils
         /// </summary>
         public static unsafe bool ContainsFlag<T>(this T container, T flag) where T : unmanaged, Enum
         {
-            return sizeof(T) switch
+            switch (sizeof(T))
             {
-                1 => (*(byte*)&container & *(byte*)&flag) == *(byte*)&flag,
-                2 => (*(ushort*)&container & *(ushort*)&flag) == *(ushort*)&flag,
-                4 => (*(uint*)&container & *(uint*)&flag) == *(uint*)&flag,
-                8 => (*(ulong*)&container & *(ulong*)&flag) == *(ulong*)&flag,
-                _ => throw new ArgumentException("Invalid enum backing type")
-            };
+                case 1:
+                    var byteFlag = *(byte*)&flag;
+                    return (*(byte*)&container & byteFlag) == byteFlag;
+                case 2:
+                    var shortFlag = *(ushort*)&flag;
+                    return (*(ushort*)&container & shortFlag) == shortFlag;
+                case 4:
+                    var intFlag = *(uint*)&flag;
+                    return (*(uint*)&container & intFlag) == intFlag;
+                case 8:
+                    var longFlag = *(ulong*)&flag;
+                    return (*(ulong*)&container & longFlag) == longFlag;
+                default:
+                    throw new ArgumentException("Invalid enum backing type");
+            }
         }
     }
 }
