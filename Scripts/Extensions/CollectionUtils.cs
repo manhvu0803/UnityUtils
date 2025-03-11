@@ -34,28 +34,28 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Quickly remove item at <c>index</c> by move the last item in list to <c>index</c>
         /// </summary>
-        public static void FastRemoveAt<T>(this IList<T> list, int index)
+        public static void RemoveAtSwapBack<T>(this IList<T> list, int index)
         {
             (list[index], list[^1]) = (list[^1], list[index]);
             list.RemoveAt(list.Count - 1);
         }
-        
+
         /// <summary>
         /// Get a random element from <c>list</c>
         /// </summary>
         /// <returns>A random element from <c>list</c>. <c>default</c> if <c>list</c> is <c>null</c> or empty </returns>
         public static T RandomItem<T>(this IList<T> list)
         {
-            return list.Count <= 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
+            return list.RandomItem<T, IList<T>>();
         }
 
         /// <summary>
-        /// Get a random element from <c>list</c>. A more complicated version of <see cref="RandomItem{T}"/> that avoids boxing
+        /// Get a random element from <c>list</c>. A more complicated version of <see cref="RandomItem{T}(IList{T})"/> that avoids boxing
         /// </summary>
         /// <returns>A random element from <c>list</c>. <c>default</c> if <c>list</c> is <c>null</c> or empty </returns>
         public static T RandomItem<T, TList>(this TList list) where TList : IList<T>
         {
-            return list.Count <= 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
+            return list is { Count: > 0 } ? list[UnityEngine.Random.Range(0, list.Count)] : default;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Vun.UnityUtils
         /// <returns>A random element from <c>list</c>. <c>default</c> if <c>list</c> is <c>null</c> or empty </returns>
         public static T RandomItem<T>(this IList<T> list, Random random)
         {
-            return list.Count <= 0 ? default : list[random.Next(0, list.Count)];
+            return list.RandomItem<T, IList<T>>(random);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Vun.UnityUtils
         /// <returns>A random element from <c>list</c>. <c>default</c> if <c>list</c> is <c>null</c> or empty </returns>
         public static T RandomItem<T, TList>(this TList list, Random random) where TList : IList<T>
         {
-            return list.Count <= 0 ? default : list[random.Next(0, list.Count)];
+            return list is { Count: > 0 } ? list[random.Next(0, list.Count)] : default;
         }
     }
 }

@@ -101,55 +101,9 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set red, green and blue value
-        /// </summary>
-        public static Color WithRGB(this Color color, float r, float g, float b)
-        {
-            color.r = r;
-            color.g = g;
-            color.b = b;
-            return color;
-        }
-
-        /// <summary>
-        /// Return a new <c>Color</c> with set red, green and alpha value
-        /// </summary>
-        public static Color WithRGA(this Color color, float r, float g, float a)
-        {
-            color.r = r;
-            color.g = g;
-            color.a = a;
-            return color;
-        }
-
-        /// <summary>
-        /// Return a new <c>Color</c> with set green, blue and alpha value
-        /// </summary>
-        public static Color WithGBA(this Color color, float g, float b, float a)
-        {
-            color.g = g;
-            color.b = b;
-            color.a = a;
-            return color;
-        }
-
-        /// <summary>
-        /// Return a new <c>Color</c> with set (non-null) values.
-        /// This function is ~4 times slower than the dedicated With(RGBA) versions
-        /// </summary>
-        public static Color With(this Color color, float? r = null, float? g = null, float? b = null, float? a = null)
-        {
-            color.r = r ?? color.r;
-            color.g = g ?? color.g;
-            color.b = b ?? color.b;
-            color.a = a ?? color.a;
-            return color;
-        }
-
-        /// <summary>
         /// Compare 2 <c>Color</c> by each RGBA value
         /// </summary>
-        public static bool Approximately(this Color a, Color b, float epsilon = 0.01f, bool compareAlpha = true)
+        public static bool Approximately(this Color a, Color b, float epsilon = 0.001f, bool compareAlpha = true)
         {
             return Mathf.Abs(a.r - b.r) <= epsilon
                 && Mathf.Abs(a.g - b.g) <= epsilon
