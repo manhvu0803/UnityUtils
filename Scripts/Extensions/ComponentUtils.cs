@@ -41,13 +41,11 @@ namespace Vun.UnityUtils
         /// <typeparam name="T">Type of targeted component</typeparam>
         /// <param name="component">If <c>option</c> is <c>FromGameObject</c>, <c>FromChildren</c> or <c>FromParent</c>, this will be the starting point</param>
         /// <param name="target">If null or empty, find components according to <c>option</c> and assign to this</param>
-        public static void Fill<T>
-        (
+        public static void Fill<T>(
             this Component component,
             ref T[] target,
             FillOption option = FillOption.FromGameObject,
-            FindObjectsSortMode sortMode = FindObjectsSortMode.None
-        )
+            FindObjectsSortMode sortMode = FindObjectsSortMode.None)
             where T : Component
         {
             if (target is { Length: > 0 })

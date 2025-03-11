@@ -1,6 +1,6 @@
 {
-    "name": "Vun.UntiyUtils",
-    "rootNamespace": "",
+    "name": "Vun.UnityUtils",
+    "rootNamespace": "Vun.UnityUtils",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

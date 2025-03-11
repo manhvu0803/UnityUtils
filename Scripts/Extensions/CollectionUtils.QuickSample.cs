@@ -219,7 +219,6 @@ namespace Vun.UnityUtils
                 throw new ArgumentException($"The number of sample ({sampleCount}) is higher than collection size ({collection.Count})");
             }
 
-            random ??= new Random();
             buffer.Clear();
             var i = 0;
 
@@ -242,41 +241,5 @@ namespace Vun.UnityUtils
         }
         
         #endregion
-
-        /// <summary>
-        /// Quickly sample <c>sampleCount</c> items from <c>collection</c> and put them into <c>buffer</c>.
-        /// This function have O(n) runtime and will not allocate extra memory
-        /// </summary>
-        /// <param name="collection">The sample collection</param>
-        /// <param name="sampleCount">The number of sample item needed</param>
-        /// <param name="buffer">Container for sample items. <c>Clear()</c> will be called for this</param>
-        /// <param name="testFunction">A function that receives a float (between 0 and 1) represent the chance of an item be taken, and return whether that item should be taken</param>
-        public static void QuickSample<T>(this ICollection<T> collection, int sampleCount, ICollection<T> buffer, Func<float, bool> testFunction)
-        {
-            if (sampleCount > collection.Count)
-            {
-                throw new ArgumentException($"The number of sample ({sampleCount}) is higher than collection size ({collection.Count})");
-            }
-
-            buffer.Clear();
-            var i = 0;
-
-            foreach (var item in collection)
-            {
-                var takeChance = (float)(sampleCount - buffer.Count) / (collection.Count - i);
-
-                if (testFunction(takeChance))
-                {
-                    buffer.Add(item);
-                }
-
-                if (buffer.Count >= sampleCount)
-                {
-                    break;
-                }
-
-                ++i;
-            }
-        }
     }
 }

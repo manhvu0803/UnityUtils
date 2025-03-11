@@ -35,21 +35,21 @@ namespace Vun.UnityUtils
         {
             var position = transform.localPosition;
             position.x = x;
-            transform.position = position;
+            transform.localPosition = position;
         }
 
         public static void SetLocalPositionY(this Transform transform, float y)
         {
             var position = transform.localPosition;
             position.y = y;
-            transform.position = position;
+            transform.localPosition = position;
         }
 
         public static void SetLocalPositionZ(this Transform transform, float z)
         {
             var position = transform.localPosition;
             position.z = z;
-            transform.position = position;
+            transform.localPosition = position;
         }
 
         #endregion
