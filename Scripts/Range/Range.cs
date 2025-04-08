@@ -5,16 +5,13 @@ namespace Vun.UnityUtils
 {
     /// <summary>
     /// A struct that ensure <see cref="Min"/> is always less than or equal to <see cref="Max"/>,
-    /// have a custom drawer,
-    /// and is interchangeable with <see cref="Vector2"/>
+    /// have a custom drawer, and is interchangeable with <see cref="Vector2"/>
     /// </summary>
     [Serializable]
     public struct Range : IRange<float>
     {
-        [SerializeField]
         private float _min;
 
-        [SerializeField]
         private float _max;
 
         /// <summary>
