@@ -82,6 +82,14 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
+        /// Get the registered service of type <c>T</c> and set to <c>service</c>. Can be <c>null</c>
+        /// </summary>
+        public static void Get<T>(ref T service)
+        {
+            service = Get<T>();
+        }
+
+        /// <summary>
         /// Remove <c>service</c> from all registered interfaces and classes
         /// </summary>
         public static void Remove(object service)
