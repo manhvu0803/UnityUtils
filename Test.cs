@@ -2,9 +2,8 @@
 {
     public class Test
     {
-        public static void Main()
-        {
-            
-        }
+        private float _value;
+
+        public float Value => _value;
     }
 }
