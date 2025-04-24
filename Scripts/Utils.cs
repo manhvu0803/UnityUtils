@@ -23,7 +23,6 @@ namespace Vun.UnityUtils
 
         /// <summary>
         /// Get all values of enum <c>T</c>.
-        /// Extension method version of <see cref="Enum.GetValues"/>
         /// </summary>
         /// <returns>Array of values of <c>T</c>. Never <c>null</c></returns>
         public static T[] GetValues<T>() where T : Enum

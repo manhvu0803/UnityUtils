@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -35,7 +34,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// If <c>target</c> is null, find a component of type <c>T</c> according to <c>FillOption</c> and assign it to <c>target</c>.
+        /// If <c>target</c> is null, find components of type <c>T</c> according to <c>FillOption</c> and assign it to <c>target</c>.
         /// Should be use in <c>OnValidate</c> or editor functions
         /// </summary>
         /// <typeparam name="T">Type of targeted component</typeparam>

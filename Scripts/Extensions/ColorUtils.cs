@@ -5,43 +5,43 @@ namespace Vun.UnityUtils
     public static class ColorUtils
     {
         /// <summary>
-        /// Return a new <c>Color</c> with set red value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.r"/> value
         /// </summary>
-        public static Color WithR(this Color color, float r)
+        public static Color WithRed(this Color color, float r)
         {
             color.r = r;
             return color;
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set green value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.g"/> value
         /// </summary>
-        public static Color WithG(this Color color, float g)
+        public static Color WithGreen(this Color color, float g)
         {
             color.g = g;
             return color;
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set blue value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.b"/> value
         /// </summary>
-        public static Color WithB(this Color color, float b)
+        public static Color WithBlue(this Color color, float b)
         {
             color.b = b;
             return color;
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.a"/> value
         /// </summary>
-        public static Color WithA(this Color color, float a)
+        public static Color WithAlpha(this Color color, float a)
         {
             color.a = a;
             return color;
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.r"/> and <see cref="Color.g"/> values
         /// </summary>
         public static Color WithRG(this Color color, float r, float g)
         {
@@ -51,7 +51,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.r"/> and <see cref="Color.b"/> values
         /// </summary>
         public static Color WithRB(this Color color, float r, float b)
         {
@@ -61,7 +61,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.r"/> and <see cref="Color.a"/> values
         /// </summary>
         public static Color WithRA(this Color color, float r, float a)
         {
@@ -71,7 +71,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.g"/> and <see cref="Color.b"/> values
         /// </summary>
         public static Color WithGB(this Color color, float g, float b)
         {
@@ -81,7 +81,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.g"/> and <see cref="Color.a"/> values
         /// </summary>
         public static Color WithGA(this Color color, float g, float a)
         {
@@ -91,7 +91,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Return a new <c>Color</c> with set alpha value
+        /// Return a new <see cref="Color"/> with set <see cref="Color.b"/> and <see cref="Color.a"/> values
         /// </summary>
         public static Color WithBA(this Color color, float b, float a)
         {
@@ -101,9 +101,9 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Compare 2 <c>Color</c> by each RGBA value
+        /// Compare 2 <see cref="Color"/> by each RGB value, with optional alpha value
         /// </summary>
-        public static bool Approximately(this Color a, Color b, float epsilon = 0.001f, bool compareAlpha = true)
+        public static bool Approximately(this in Color a, in Color b, float epsilon = 0.001f, bool compareAlpha = true)
         {
             return Mathf.Abs(a.r - b.r) <= epsilon
                 && Mathf.Abs(a.g - b.g) <= epsilon
