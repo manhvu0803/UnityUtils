@@ -1,6 +1,6 @@
 {
   "name": "com.vun.unity-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Unity Utils",
   "description": "A collections of C# and Unity utility functions and classes",
   "unity": "2021.3",
