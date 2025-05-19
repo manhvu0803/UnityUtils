@@ -66,7 +66,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this NativeParallelHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -76,7 +76,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this UnsafeParallelHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -86,7 +86,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this NativeParallelMultiHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -96,7 +96,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this UnsafeParallelMultiHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -122,7 +122,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this NativeHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -132,7 +132,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this UnsafeHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -142,7 +142,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this NativeMultiHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
@@ -152,7 +152,7 @@ namespace Vun.UnityUtils
 
         public static void DisposeIfCreated<TKey, TValue>(this UnsafeMultiHashMap<TKey, TValue> hashMap)
             where TKey : unmanaged, IEquatable<TKey>
-            where TValue : struct
+            where TValue : unmanaged
         {
             if (hashMap.IsCreated)
             {
