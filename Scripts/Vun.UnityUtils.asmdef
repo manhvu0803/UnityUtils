@@ -1,7 +1,9 @@
 {
     "name": "Vun.UnityUtils",
     "rootNamespace": "Vun.UnityUtils",
-    "references": [],
+    "references": [
+        "Unity.Collections"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
@@ -9,6 +11,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.collections",
+            "expression": "0.0.0",
+            "define": "UNITY_COLLECTION_EXISTS"
+        }
+    ],
     "noEngineReferences": false
 }
