@@ -43,7 +43,7 @@ namespace Vun.UnityUtils
         public static void Fill<T>(
             this Component component,
             ref T[] target,
-            FillOption option = FillOption.FromGameObject,
+            FillOption option = FillOption.FromChildren,
             FindObjectsSortMode sortMode = FindObjectsSortMode.None)
             where T : Component
         {
@@ -73,7 +73,7 @@ namespace Vun.UnityUtils
         public static void Fill<T>(
             this Component component,
             ref List<T> target,
-            FillOption option = FillOption.FromGameObject,
+            FillOption option = FillOption.FromChildren,
             FindObjectsSortMode sortMode = FindObjectsSortMode.None)
             where T : Component
         {
@@ -90,7 +90,7 @@ namespace Vun.UnityUtils
         /// For auto properties and fields that can't be passed with <c>ref</c>
         /// </summary>
         /// <returns>Found component if target is null, otherwise return target</returns>
-        public static T GetIfNull<T>(Component component, T target, FillOption option = FillOption.FromGameObject) where T : Component
+        public static T GetIfNull<T>(this Component component, T target, FillOption option = FillOption.FromGameObject) where T : Component
         {
             component.Fill(ref target, option);
             return target;
@@ -100,9 +100,10 @@ namespace Vun.UnityUtils
         /// For auto properties and fields that can't be passed with <c>ref</c>
         /// </summary>
         /// <returns>Found components if target is null, otherwise return target</returns>
-        public static T[] GetIfNull<T>(this Component component,
+        public static T[] GetIfNull<T>(
+            this Component component,
             T[] target,
-            FillOption option = FillOption.FromGameObject,
+            FillOption option = FillOption.FromChildren,
             FindObjectsSortMode sortMode = FindObjectsSortMode.None)
             where T : Component
         {
@@ -114,9 +115,10 @@ namespace Vun.UnityUtils
         /// For auto properties and fields that can't be passed with <c>ref</c>
         /// </summary>
         /// <returns>Found components if target is null, otherwise return target</returns>
-        public static List<T> GetIfNull<T>(this Component component,
+        public static List<T> GetIfNull<T>(
+            this Component component,
             List<T> target,
-            FillOption option = FillOption.FromGameObject,
+            FillOption option = FillOption.FromChildren,
             FindObjectsSortMode sortMode = FindObjectsSortMode.None)
             where T : Component
         {
@@ -161,5 +163,26 @@ namespace Vun.UnityUtils
         }
 
         #endregion
+
+        /// <summary>
+        /// Destroy <c>unityObject</c>, whether in build, play mode or edit mode
+        /// </summary>
+        public static void DestroyUnconditionally(this Object unityObject)
+        {
+            if (unityObject == null)
+            {
+                return;
+            }
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Object.DestroyImmediate(unityObject);
+                return;
+            }
+#endif
+
+            Object.Destroy(unityObject);
+        }
     }
 }

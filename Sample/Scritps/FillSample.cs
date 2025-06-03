@@ -14,13 +14,17 @@ namespace Vun.UnityUtils.sample
         [field: SerializeField]
         public List<Rigidbody> ChildrenBodies { get; private set; }
 
-        private readonly List<Rigidbody> _bodyBuffer = new();
+        private List<Rigidbody> _bodyBuffer = new();
+
+        public Collider Collider { get; private set; }
 
         protected void OnValidate()
         {
             this.Fill(ref AudioSource);
             this.Fill(ref Colliders, FillOption.FromAllObjects);
-            ChildrenBodies = this.GetIfNull(ChildrenBodies, FillOption.FromChildren);
+            this.Fill(ref _bodyBuffer, FillOption.FromAllObjects);
+            ChildrenBodies = this.GetIfNull(ChildrenBodies);
+            Collider = this.GetIfNull(Collider);
         }
 
         protected void Start()
