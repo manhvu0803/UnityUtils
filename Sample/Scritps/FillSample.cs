@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Vun.UnityUtils.sample
 {
-    public class FillSample : SingletonBehaviour<FillSample>, IMoveRandom
+    public class FillSample : MonoBehaviour, IMoveRandom
     {
         [SerializeField]
         protected AudioSource AudioSource;
