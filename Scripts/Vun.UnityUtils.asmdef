@@ -2,7 +2,9 @@
     "name": "Vun.UnityUtils",
     "rootNamespace": "Vun.UnityUtils",
     "references": [
-        "Unity.Collections"
+        "Unity.Collections",
+        "Unity.Mathematics",
+        "Unity.Burst"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -21,6 +23,11 @@
             "name": "com.unity.collections",
             "expression": "1.3.0",
             "define": "UNITY_COLLECTION_FROM_1_3"
+        },
+        {
+            "name": "com.unity.burst",
+            "expression": "0.0.0",
+            "define": "UNITY_BURST_EXISTS"
         }
     ],
     "noEngineReferences": false
