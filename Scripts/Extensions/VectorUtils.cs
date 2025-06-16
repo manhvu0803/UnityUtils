@@ -105,6 +105,23 @@ namespace Vun.UnityUtils
             return vector;
         }
 
+        public static bool Contains(this in Vector4 max, float x, float y, float z, float w, in Vector4 min = default)
+        {
+            return x >= min.x
+                && x <= max.x
+                && y >= min.y
+                && y <= max.y
+                && z >= min.z
+                && z <= max.z
+                && w >= min.w
+                && w <= max.w;
+        }
+
+        public static bool Contains(this in Vector4 max, in Vector4 coordinate, in Vector4 min = default)
+        {
+            return max.Contains(coordinate.x, coordinate.y, coordinate.z, coordinate.w, min);
+        }
+
         #endregion
 
         #region Vector3
@@ -133,6 +150,26 @@ namespace Vun.UnityUtils
             vector.x = y ?? vector.y;
             vector.x = z ?? vector.z;
             return vector;
+        }
+
+        public static float GetVolume(this in Vector3 vector)
+        {
+            return vector.x * vector.y * vector.z;
+        }
+
+        public static bool Contains(this in Vector3 max, float x, float y, float z, in Vector3 min = default)
+        {
+            return x >= min.x
+                && x <= max.x
+                && y >= min.y
+                && y <= max.y
+                && z >= min.z
+                && z <= max.z;
+        }
+
+        public static bool Contains(this in Vector3 max, in Vector3 coordinate, in Vector3 min = default)
+        {
+            return max.Contains(coordinate.x, coordinate.y, coordinate.z, min);
         }
 
         #endregion
@@ -165,6 +202,30 @@ namespace Vun.UnityUtils
             return vector;
         }
 
+        public static int GetVolume(this in Vector3Int vector)
+        {
+            return vector.x * vector.y * vector.z;
+        }
+
+        /// <param name="max">Is exclusive</param>
+        /// <param name="min">Is inclusive</param>
+        public static bool Contains(this in Vector3Int max, int x, int y, int z, in Vector3Int min = default)
+        {
+            return x >= min.x
+                && x < max.x
+                && y >= min.y
+                && y < max.y
+                && z >= min.z
+                && z < max.z;
+        }
+
+        /// <param name="max">Is exclusive</param>
+        /// <param name="min">Is inclusive</param>
+        public static bool Contains(this in Vector3Int max, in Vector3Int coordinate, in Vector3Int min = default)
+        {
+            return max.Contains(coordinate.x, coordinate.y, coordinate.z, min);
+        }
+
         #endregion
 
         #region Vector2
@@ -179,6 +240,24 @@ namespace Vun.UnityUtils
         {
             vector.y = y;
             return vector;
+        }
+
+        public static float GetArea(this in Vector2 vector)
+        {
+            return vector.x * vector.y;
+        }
+
+        public static bool Contains(this in Vector2 max, float x, float y, in Vector2 min = default)
+        {
+            return x >= min.x
+                && x <= max.x
+                && y >= min.y
+                && y <= max.y;
+        }
+
+        public static bool Contains(this in Vector2 max, in Vector2 coordinate, in Vector2 min = default)
+        {
+            return max.Contains(coordinate.x, coordinate.y, min);
         }
 
         #endregion
@@ -196,7 +275,29 @@ namespace Vun.UnityUtils
             vector.y = y;
             return vector;
         }
-        
+
+        public static int GetArea(this in Vector2Int vector)
+        {
+            return vector.x * vector.y;
+        }
+
+        /// <param name="max">Is exclusive</param>
+        /// <param name="min">Is inclusive</param>
+        public static bool Contains(this in Vector2Int max, int x, int y, in Vector2Int min = default)
+        {
+            return x >= min.x
+                && x < max.x
+                && y >= min.y
+                && y < max.y;
+        }
+
+        /// <param name="max">Is exclusive</param>
+        /// <param name="min">Is inclusive</param>
+        public static bool Contains(this in Vector2Int max, in Vector2Int coordinate, in Vector2Int min = default)
+        {
+            return max.Contains(coordinate.x, coordinate.y, min);
+        }
+
         #endregion
     }
 }
