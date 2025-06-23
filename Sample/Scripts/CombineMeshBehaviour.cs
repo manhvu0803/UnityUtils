@@ -8,7 +8,7 @@ namespace Vun.UnityUtils
         [SerializeField]
         private List<MeshFilter> _meshes;
 
-        public bool AutorunAtStart;
+        public bool AutoRunAtStart;
 
         public bool DestroyOldObjects;
 
@@ -23,7 +23,7 @@ namespace Vun.UnityUtils
 
         private void Start()
         {
-            if (AutorunAtStart)
+            if (AutoRunAtStart)
             {
                 CombineMeshes();
             }
