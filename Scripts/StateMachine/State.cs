@@ -1,26 +1,22 @@
-﻿namespace Vun.UnityUtils.StateMachine
+﻿namespace Vun.UnityUtils.GenericFSM
 {
+    /// <summary>
+    /// A bare minimum class implementation of <see cref="IState{T}"/>
+    /// </summary>
     public class State<T> : IState<T>
     {
-        protected IStateMachine<T> StateMachine;
+        protected T Context { get; private set; }
 
-        protected T Owner => StateMachine.Owner;
-
-        public void TransitionTo(State<T> state)
+        public virtual void OnEnter(T context)
         {
-            StateMachine.TransitionTo(state);
+            Context = context;
         }
 
-        public void OnEnter(IStateMachine<T> stateMachine)
-        {
-            StateMachine = stateMachine;
-        }
+        public virtual void Update(float deltaTime) { }
 
-        public void Update(float deltaTime) { }
-
-        public void OnExit()
+        public virtual void OnExit()
         {
-            StateMachine = null;
+            Context = default;
         }
     }
 }

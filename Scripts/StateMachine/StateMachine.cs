@@ -1,36 +1,37 @@
-﻿namespace Vun.UnityUtils.StateMachine
+﻿namespace Vun.UnityUtils.GenericFSM
 {
-    public class StateMachine<T> : IStateMachine<T>
+    /// <summary>
+    /// A simple implementation of <see cref="IStateMachine{T}"/> that need to be manually updated
+    /// </summary>
+    public class StateMachine<T> : IStateMachine<IState<T>>
     {
-        public T Owner { get; }
+        private readonly T _context;
 
-        private IState<T> _currentState;
+        public IState<T> CurrentState { get; set; }
 
-        public StateMachine(T owner) : this(owner, new State<T>()) { }
-
-        public StateMachine(T owner, IState<T> initialState)
+        public StateMachine(T context, IState<T> initialState)
         {
-            Owner = owner;
-            _currentState = initialState;
-            initialState.OnEnter(this);
+            _context = context;
+            CurrentState = initialState;
+            initialState.OnEnter(_context);
         }
 
         public void TransitionTo(IState<T> state)
         {
-            _currentState.OnExit();
-            _currentState = state;
-            _currentState.OnEnter(this);
+            CurrentState.OnExit();
+            CurrentState = state;
+            CurrentState.OnEnter(_context);
         }
 
         public void Update(float deltaTime)
         {
-            _currentState.Update(deltaTime);
+            CurrentState.Update(deltaTime);
         }
 
         public void Exit()
         {
-            _currentState.OnExit();
-            _currentState = null;
+            CurrentState.OnExit();
+            CurrentState = default;
         }
     }
 }
