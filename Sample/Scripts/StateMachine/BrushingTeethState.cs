@@ -7,9 +7,9 @@ namespace Sample.Scripts.StateMachine
     {
         private Vector3 _originalPosition;
 
-        public override void OnEnter(IStateMachine<Person, IAutoState<Person>> stateMachine)
+        public override void Enter(IAutoStateMachine<Person, IAutoState<Person>> stateMachine)
         {
-            base.OnEnter(stateMachine);
+            base.Enter(stateMachine);
             _originalPosition = Context.transform.position;
             Context.Say("Brushing");
             Context.Wait(5, FinishBrushing);

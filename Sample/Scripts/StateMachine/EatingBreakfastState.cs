@@ -6,9 +6,9 @@ namespace Sample.Scripts.StateMachine
     {
         private float _timeToSay;
 
-        public override void OnEnter(IStateMachine<Person, IAutoState<Person>> stateMachine)
+        public override void Enter(IAutoStateMachine<Person, IAutoState<Person>> stateMachine)
         {
-            base.OnEnter(stateMachine);
+            base.Enter(stateMachine);
             Context.Say("Eating");
             Context.Wait(5, FinishEating);
         }
@@ -27,7 +27,7 @@ namespace Sample.Scripts.StateMachine
         private void FinishEating()
         {
             Context.Say("Done eating");
-            TransitionTo(new MovingState(Context.GetTarget(), StateMachine.Exit));
+            TransitionTo(new MovingState(Context.GetTarget(), StateMachine.Shutdown));
         }
     }
 }

@@ -2,14 +2,14 @@
 
 namespace Sample.Scripts.StateMachine
 {
-    public class GettingReadyState : CompositeAutoState<Person>
+    public class GettingReadyState : AutoCompositeState<Person>
     {
         protected override IAutoState<Person> InitialState => new MovingState(Context.GetTarget(), new BrushingTeethState());
 
-        public override void Exit()
+        public override void Shutdown()
         {
             Context.Say("I'm done with everything");
-            StateMachine.Exit();
+            StateMachine.Shutdown();
             base.Exit();
         }
     }

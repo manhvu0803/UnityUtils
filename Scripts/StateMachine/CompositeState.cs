@@ -11,11 +11,11 @@
 
         protected abstract IState<T> InitialState { get; }
 
-        public override void OnEnter(T context)
+        public override void Enter(T context)
         {
-            base.OnEnter(context);
+            base.Enter(context);
             _subState = InitialState;
-            _subState.OnEnter(context);
+            _subState.Enter(context);
             _context = context;
         }
 
@@ -26,14 +26,14 @@
 
         public virtual void TransitionTo(IState<T> state)
         {
-            _subState.OnExit();
+            _subState.Exit();
             _subState = state;
-            _subState.OnEnter(_context);
+            _subState.Enter(_context);
         }
 
-        public virtual void Exit()
+        public virtual void Shutdown()
         {
-            _subState.OnExit();
+            _subState.Exit();
             _subState = default;
         }
     }

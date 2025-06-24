@@ -13,14 +13,14 @@
         {
             _context = context;
             CurrentState = initialState;
-            initialState.OnEnter(_context);
+            initialState.Enter(_context);
         }
 
-        public void TransitionTo(IState<T> state)
+        public void TransitionTo(IState<T> stateId)
         {
-            CurrentState.OnExit();
-            CurrentState = state;
-            CurrentState.OnEnter(_context);
+            CurrentState.Exit();
+            CurrentState = stateId;
+            CurrentState.Enter(_context);
         }
 
         public void Update(float deltaTime)
@@ -28,9 +28,9 @@
             CurrentState.Update(deltaTime);
         }
 
-        public void Exit()
+        public void Shutdown()
         {
-            CurrentState.OnExit();
+            CurrentState.Exit();
             CurrentState = default;
         }
     }

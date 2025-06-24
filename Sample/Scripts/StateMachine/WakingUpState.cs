@@ -11,9 +11,9 @@ namespace Sample.Scripts.StateMachine
             _wakeUpTime = wakeUpTime;
         }
 
-        public override void OnEnter(IStateMachine<Person, IAutoState<Person>> stateMachine)
+        public override void Enter(IAutoStateMachine<Person, IAutoState<Person>> stateMachine)
         {
-            base.OnEnter(stateMachine);
+            base.Enter(stateMachine);
             Context.Wait(_wakeUpTime, WakeUp);
             Context.Say("Mm");
         }

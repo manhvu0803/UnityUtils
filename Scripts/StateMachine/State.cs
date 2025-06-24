@@ -7,14 +7,14 @@
     {
         protected T Context { get; private set; }
 
-        public virtual void OnEnter(T context)
+        public virtual void Enter(T context)
         {
             Context = context;
         }
 
         public virtual void Update(float deltaTime) { }
 
-        public virtual void OnExit()
+        public virtual void Exit()
         {
             Context = default;
         }
