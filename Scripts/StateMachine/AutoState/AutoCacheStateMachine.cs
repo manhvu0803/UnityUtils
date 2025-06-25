@@ -29,7 +29,7 @@ namespace Vun.UnityUtils.GenericFSM
         {
             if (!_states.TryGetValue(stateID, out var state))
             {
-                state = CreateState(stateID);
+                state = GetState(stateID);
                 _states[stateID] = state;
             }
 
@@ -46,7 +46,7 @@ namespace Vun.UnityUtils.GenericFSM
             OnStateChanged.TryInvoke(oldStateId);
         }
 
-        protected abstract IAutoState<TContext, TKey> CreateState(TKey stateId);
+        protected abstract IAutoState<TContext, TKey> GetState(TKey stateId);
 
         public virtual void Update(float deltaTime)
         {

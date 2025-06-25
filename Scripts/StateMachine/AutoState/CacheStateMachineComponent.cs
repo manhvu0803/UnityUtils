@@ -15,21 +15,6 @@ namespace Vun.UnityUtils.GenericFSM
     /// <remarks>This has the same performance implication as <see cref="StateMachineComponent{T}"/></remarks>
     public abstract class CacheStateMachineComponent<TContext, TKey> : MonoBehaviour, IAutoStateMachine<TContext, TKey> where TContext : Component
     {
-        private class StateMachine : AutoCacheStateMachine<TContext, TKey>
-        {
-            public delegate IAutoState<TContext, TKey> CreateStateCallback(TKey stateId);
-
-            private CreateStateCallback _stateCreator;
-
-            public StateMachine(TContext context, TKey initialStateId, CreateStateCallback stateCreator) :
-                base(context, initialStateId, stateCreator(initialStateId)) { }
-
-            protected override IAutoState<TContext, TKey> CreateState(TKey stateId)
-            {
-                return _stateCreator(stateId);
-            }
-        }
-
         [field: SerializeField]
         public TContext Context { get; private set; }
 
@@ -62,12 +47,12 @@ namespace Vun.UnityUtils.GenericFSM
 
         private void Start()
         {
-            _stateMachine = new StateMachine(Context, InitialStateId, CreateState);
+            _stateMachine = new AutoCacheStateMachineWithCallback<TContext, TKey>(Context, InitialStateId, GetState);
         }
 
         protected abstract TKey InitialStateId { get; }
 
-        protected abstract IAutoState<TContext, TKey> CreateState(TKey stateId);
+        protected abstract IAutoState<TContext, TKey> GetState(TKey stateId);
 
         private void Update()
         {

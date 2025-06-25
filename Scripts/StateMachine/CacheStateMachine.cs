@@ -18,14 +18,14 @@ namespace Vun.UnityUtils.GenericFSM
         {
             if (!_states.TryGetValue(stateId, out var state))
             {
-                state = CreateState(stateId);
+                state = GetState(stateId);
                 _states[stateId] = state;
             }
 
             _stateMachine.TransitionTo(state);
         }
 
-        protected abstract IState<TContext> CreateState(TKey stateId);
+        protected abstract IState<TContext> GetState(TKey stateId);
 
         public void Shutdown()
         {

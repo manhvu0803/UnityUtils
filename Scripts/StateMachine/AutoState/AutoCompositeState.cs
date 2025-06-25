@@ -5,7 +5,9 @@ namespace Vun.UnityUtils.GenericFSM
     /// <summary>
     /// A hierarchical state machine implementation of <see cref="IAutoState{T,T}"/>
     /// </summary>
-    public abstract class AutoCompositeState<TContext, TState, TInnerState> : AutoState<TContext, TState>, IAutoStateMachine<TContext, TInnerState>
+    public abstract class AutoCompositeState<TContext, TState, TInnerState> :
+        AutoState<TContext, TState>,
+        IAutoStateMachine<TContext, TInnerState>
         where TInnerState : IAutoState<TContext, TInnerState>
     {
         public new TContext Context => base.Context;
@@ -47,12 +49,13 @@ namespace Vun.UnityUtils.GenericFSM
 
         public override string ToString()
         {
-            return $"{GetType().Name}:{CurrentState}";
+            return $"{GetType().Name}:{CurrentState.GetType().Name}";
         }
     }
 
-    public abstract class AutoCompositeState<TContext, TState> : AutoCompositeState<TContext, IAutoState<TContext>, TState>
-        where TState : IAutoState<TContext, TState>
+    public abstract class AutoCompositeState<TContext, TInnerState> :
+        AutoCompositeState<TContext,IAutoState<TContext>, TInnerState>
+        where TInnerState : IAutoState<TContext, TInnerState>
     {
 
     }
