@@ -23,4 +23,6 @@ namespace Vun.UnityUtils.GenericFSM
         /// <summary>Invoked when this state machine is shut down (either from outside or inside)</summary>
         public event Action OnShutdown;
     }
+
+    public interface IAutoStateMachine<TContext> : IAutoStateMachine<TContext, IAutoState<TContext>> { }
 }

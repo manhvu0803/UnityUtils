@@ -8,17 +8,21 @@ namespace Vun.UnityUtils.GenericFSM
 {
     /// <summary>
     /// A <see cref="MonoBehaviour"/> implementation of <see cref="IAutoStateMachine{TContext,TState}"/>,
-    /// with auto-update, auto-enable on transition and auto-disable on exit.
-    /// However, unlike <see cref="StateMachineComponent{T}"/>, this automatically cache and reuse state using a key,
-    /// which can be anything from an enum to the type of the state itself
+    /// with auto-update, auto-enable on transition and auto-disable on exit
     /// </summary>
-    /// <remarks>This has the same performance implication as <see cref="StateMachineComponent{T}"/></remarks>
-    public abstract class CacheStateMachineComponent<TContext, TKey> : MonoBehaviour, IAutoStateMachine<TContext, TKey> where TContext : Component
+    /// <remarks>
+    /// This would scale badly due to its subscription to multiple update methods.
+    /// For a large number of agents, use a pure C# implementation (such as <see cref="AutoStateMachine{T}"/>)
+    /// </remarks>
+    public abstract class StateMachineComponent<TContext, TState> :
+        MonoBehaviour,
+        IAutoStateMachine<TContext, TState>
+        where TContext : Component
     {
         [field: SerializeField]
         public TContext Context { get; private set; }
 
-        public event Action<TKey> OnStateChanged;
+        public event Action<TState> OnStateChanged;
 
         public event Action OnShutdown;
 
@@ -27,16 +31,16 @@ namespace Vun.UnityUtils.GenericFSM
 #if ODIN_INSPECTOR
         [ShowInInspector, ReadOnly]
 #endif
-        public TKey CurrentState => _stateMachine.CurrentState;
+        public TState CurrentState => _stateMachine == null ? default : _stateMachine.CurrentState;
 
         public bool UseUnscaledTime;
 
-        private AutoCacheStateMachine<TContext, TKey> _stateMachine;
+        private IUpdatableAutoStateMachine<TContext, TState> _stateMachine;
 
 #if ODIN_INSPECTOR
         [ShowInInspector, ReadOnly]
 #endif
-        private string CurrentStateInfo => _stateMachine.CurrentStateObject?.ToString() ?? "";
+        private string CurrentStateInfo => CurrentState?.ToString() ?? "";
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -47,12 +51,23 @@ namespace Vun.UnityUtils.GenericFSM
 
         private void Start()
         {
-            _stateMachine = new AutoCacheStateMachineWithCallback<TContext, TKey>(Context, InitialStateId, GetState);
+            _stateMachine = CreateStateMachine();
+            _stateMachine.OnStateChanged += OnSubMachineStateChanged;
+            _stateMachine.OnShutdown += OnSubMachineShutdown;
         }
 
-        protected abstract TKey InitialStateId { get; }
+        protected abstract IUpdatableAutoStateMachine<TContext, TState> CreateStateMachine();
 
-        protected abstract IAutoState<TContext, TKey> GetState(TKey stateId);
+        private void OnSubMachineStateChanged(TState stateId)
+        {
+            OnStateChanged?.Invoke(stateId);
+        }
+
+        private void OnSubMachineShutdown()
+        {
+            enabled = false;
+            OnShutdown?.Invoke();
+        }
 
         private void Update()
         {
@@ -88,7 +103,7 @@ namespace Vun.UnityUtils.GenericFSM
         /// <summary>
         /// Exit the <see cref="CurrentState"/>, enter <c>state</c> and enable this <see cref="MonoBehaviour"/>
         /// </summary>
-        public void TransitionTo(TKey stateId)
+        public void TransitionTo(TState stateId)
         {
             _stateMachine.TransitionTo(stateId);
             enabled = true;
@@ -96,7 +111,10 @@ namespace Vun.UnityUtils.GenericFSM
 
         protected virtual void OnDestroy()
         {
-            Shutdown();
+            if (enabled)
+            {
+                Shutdown();
+            }
         }
 
         /// <summary>
@@ -104,7 +122,6 @@ namespace Vun.UnityUtils.GenericFSM
         /// </summary>
         public void Shutdown()
         {
-            enabled = false;
             _stateMachine.Shutdown();
         }
     }

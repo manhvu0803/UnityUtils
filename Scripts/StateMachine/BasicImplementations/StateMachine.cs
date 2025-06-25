@@ -1,7 +1,7 @@
 ﻿namespace Vun.UnityUtils.GenericFSM
 {
     /// <summary>
-    /// A simple implementation of <see cref="IStateMachine{T}"/> that need to be manually updated
+    /// A simple implementation of <see cref="IUpdatable{TState}"/>
     /// </summary>
     public class StateMachine<T> : IStateMachine<IState<T>>
     {

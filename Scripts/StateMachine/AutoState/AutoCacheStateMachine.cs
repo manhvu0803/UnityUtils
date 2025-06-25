@@ -1,62 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Vun.UnityUtils.GenericFSM
 {
-    public abstract class AutoCacheStateMachine<TContext, TKey> : IAutoStateMachine<TContext, TKey>
+    public class AutoCacheStateMachine<TContext, TState, TStateId> :
+        AutoStateMachine<TContext, TState, TStateId>
+        where TState : IAutoState<TContext, TStateId>
     {
-        public event Action OnShutdown;
-
-        public event Action<TKey> OnStateChanged;
-
-        private readonly Dictionary<TKey, IAutoState<TContext, TKey>> _states = new();
-
-        public TContext Context { get; }
-
-        public TKey CurrentState { get; private set; }
-
-        public IAutoState<TContext, TKey> CurrentStateObject { get; private set; }
-
-        protected AutoCacheStateMachine(TContext context, TKey initialStateId, IAutoState<TContext, TKey> initialState)
+        // This must be a separate class because C# doesn't allow passing "this" to constructors
+        private class StateCache : ICreator<TState, TStateId>
         {
-            _states[initialStateId] = initialState;
-            CurrentState = initialStateId;
-            CurrentStateObject = initialState;
-            Context = context;
-        }
+            private readonly Dictionary<TStateId, TState> _states = new();
 
-        public void TransitionTo(TKey stateID)
-        {
-            if (!_states.TryGetValue(stateID, out var state))
+            private readonly ICreator<TState, TStateId> _stateCreator;
+
+            public StateCache(ICreator<TState, TStateId> stateCreator)
             {
-                state = GetState(stateID);
-                _states[stateID] = state;
+                _stateCreator = stateCreator;
             }
 
-            CurrentStateObject.Exit();
-            CurrentStateObject = state;
-            CurrentStateObject.Enter(this);
-            SetStateId(stateID);
+            public TState Create(TStateId stateId)
+            {
+                if (_states.TryGetValue(stateId, out var state))
+                {
+                    return state;
+                }
+
+                state = _stateCreator.Create(stateId);
+                _states[stateId] = state;
+                return state;
+            }
         }
 
-        protected void SetStateId(TKey stateId)
-        {
-            var oldStateId = CurrentState;
-            CurrentState = stateId;
-            OnStateChanged.TryInvoke(oldStateId);
-        }
+        public AutoCacheStateMachine(TContext context, TStateId initialStateId, ICreator<TState, TStateId> stateCreator) :
+            base(context, initialStateId, new StateCache(stateCreator))
+        { }
+    }
 
-        protected abstract IAutoState<TContext, TKey> GetState(TKey stateId);
-
-        public virtual void Update(float deltaTime)
-        {
-            CurrentStateObject.Update(deltaTime);
-        }
-
-        public virtual void Shutdown()
-        {
-            CurrentStateObject.Exit();
-            OnShutdown.TryInvoke();
-        }
+    public class AutoCacheStateMachine<TContext, TStateId> : AutoCacheStateMachine<TContext, IAutoState<TContext, TStateId>, TStateId>
+    {
+        public AutoCacheStateMachine(TContext context, TStateId initialStateId, ICreator<IAutoState<TContext, TStateId>, TStateId> stateCreator) :
+            base(context, initialStateId, stateCreator)
+        { }
     }
 }

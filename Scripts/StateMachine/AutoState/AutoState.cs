@@ -5,6 +5,7 @@
     /// </summary>
     public abstract class AutoState<TContext, TState> : IAutoState<TContext, TState>
     {
+        /// <summary>The owner state machine of this state</summary>
         protected IAutoStateMachine<TContext, TState> StateMachine { get; private set; }
 
         /// <summary>The target (host) of this state</summary>

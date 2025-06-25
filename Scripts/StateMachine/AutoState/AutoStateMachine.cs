@@ -2,45 +2,76 @@
 
 namespace Vun.UnityUtils.GenericFSM
 {
-    /// <summary>
-    /// A simple implementation of <see cref="IAutoStateMachine{TContext,TState}"/> with <see cref="IAutoState{T}"/>,
-    /// which need to be manually updated
-    /// </summary>
-    public class AutoStateMachine<T> : IAutoStateMachine<T, IAutoState<T>>
+    public abstract class AutoStateMachine<TContext, TState, TStateId> :
+        IUpdatableAutoStateMachine<TContext, TStateId>
+        where TState : IAutoState<TContext, TStateId>
     {
-        public T Context { get; }
+        public TContext Context { get; }
 
-        public event Action<IAutoState<T>> OnStateChanged;
+        public TStateId CurrentState { get; private set; }
+
+        public event Action<TStateId> OnStateChanged;
 
         public event Action OnShutdown;
 
-        public IAutoState<T> CurrentState { get; set; }
+        public TState CurrentStateObject { get; private set; }
 
-        public AutoStateMachine(T context, IAutoState<T> initialState)
+        private readonly ICreator<TState, TStateId> _stateCreator;
+
+        protected AutoStateMachine(TContext context, TStateId initialStateId, ICreator<TState, TStateId> stateCreator)
         {
+            _stateCreator = stateCreator;
+            CurrentState = initialStateId;
             Context = context;
-            CurrentState = initialState;
-            initialState.Enter(this);
+            CurrentStateObject = stateCreator.Create(initialStateId);
+            CurrentStateObject.Enter(this);
         }
 
-        public void TransitionTo(IAutoState<T> state)
+        public virtual void TransitionTo(TStateId stateId)
         {
-            CurrentState.Exit();
-            CurrentState = state;
-            CurrentState.Enter(this);
-            OnStateChanged.TryInvoke(state);
+            CurrentStateObject.Exit();
+            CurrentStateObject = _stateCreator.Create(stateId);
+            CurrentStateObject.Enter(this);
+            SetStateId(stateId);
         }
 
-        public void Update(float deltaTime)
+        protected void SetStateId(TStateId stateId)
         {
-            CurrentState.Update(deltaTime);
+            var oldStateId = CurrentState;
+            CurrentState = stateId;
+            OnStateChanged.TryInvoke(oldStateId);
         }
 
-        public void Shutdown()
+        public virtual void Update(float deltaTime)
         {
-            CurrentState.Exit();
-            CurrentState = default;
+            CurrentStateObject.Update(deltaTime);
+        }
+
+        public virtual void Shutdown()
+        {
+            CurrentStateObject.Exit();
             OnShutdown.TryInvoke();
         }
+    }
+
+    public abstract class AutoStateMachine<TContext, TStateId> : AutoStateMachine<TContext, IAutoState<TContext, TStateId>, TStateId>
+    {
+        protected AutoStateMachine(TContext context, TStateId initialStateId, ICreator<IAutoState<TContext, TStateId>, TStateId> stateCreator) :
+            base(context, initialStateId, stateCreator)
+        { }
+    }
+
+    public class AutoStateMachine<TContext> : AutoStateMachine<TContext, IAutoState<TContext>, IAutoState<TContext>>
+    {
+        private class AutoStateCreator : ICreator<IAutoState<TContext>, IAutoState<TContext>>
+        {
+            public IAutoState<TContext> Create(IAutoState<TContext> state)
+            {
+                return state;
+            }
+        }
+
+        public AutoStateMachine(TContext context, IAutoState<TContext> initialState)
+            : base(context, initialState, new AutoStateCreator()) { }
     }
 }
