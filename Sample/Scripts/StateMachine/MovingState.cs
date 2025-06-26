@@ -4,17 +4,11 @@ using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class MovingState : AutoState<Person>
+    public class MovingState : State<Person>
     {
         private readonly Vector3 _target;
 
         private readonly Action _doneMovingCallback;
-
-        public MovingState(in Vector3 target, IAutoState<Person> nextState)
-        {
-            _target = target;
-            _doneMovingCallback = () => TransitionTo(nextState);
-        }
 
         public MovingState(in Vector3 target, Action doneMovingCallback)
         {

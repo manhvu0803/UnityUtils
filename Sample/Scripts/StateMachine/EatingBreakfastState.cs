@@ -1,12 +1,13 @@
-﻿using Vun.UnityUtils.GenericFSM;
+﻿using System;
+using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    internal class EatingBreakfastState : AutoState<Person>
+    internal class EatingBreakfastState : TypeBasedState<Person>
     {
         private float _timeToSay;
 
-        public override void Enter(IAutoStateMachine<Person, IAutoState<Person>> stateMachine)
+        public override void Enter(IAutoStateMachine<Person, Type> stateMachine)
         {
             base.Enter(stateMachine);
             Context.Say("Eating");
@@ -27,7 +28,7 @@ namespace Sample.Scripts.StateMachine
         private void FinishEating()
         {
             Context.Say("Done eating");
-            TransitionTo(new MovingState(Context.GetTarget(), StateMachine.Shutdown));
+            TransitionTo<MovingOutState>();
         }
     }
 }
