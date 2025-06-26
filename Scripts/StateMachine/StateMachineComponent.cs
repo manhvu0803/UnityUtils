@@ -49,7 +49,7 @@ namespace Vun.UnityUtils.GenericFSM
         }
 #endif
 
-        private void Start()
+        protected virtual void Start()
         {
             _stateMachine = CreateStateMachine();
             _stateMachine.OnStateChanged += OnSubMachineStateChanged;
@@ -69,7 +69,7 @@ namespace Vun.UnityUtils.GenericFSM
             OnShutdown?.Invoke();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (UpdateMethod == UpdateType.Update)
             {
@@ -77,7 +77,7 @@ namespace Vun.UnityUtils.GenericFSM
             }
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             if (UpdateMethod == UpdateType.FixedUpdate)
             {
@@ -85,7 +85,7 @@ namespace Vun.UnityUtils.GenericFSM
             }
         }
 
-        private void LateUpdate()
+        protected virtual void LateUpdate()
         {
             if (UpdateMethod == UpdateType.LateUpdate)
             {
