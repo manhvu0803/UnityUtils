@@ -122,6 +122,11 @@ namespace Vun.UnityUtils
             return max.Contains(coordinate.x, coordinate.y, coordinate.z, coordinate.w, min);
         }
 
+        public static bool IsInRange(this in Vector4 coordinate, in Vector4 max, in Vector4 min = default)
+        {
+            return max.Contains(coordinate, min);
+        }
+
         #endregion
 
         #region Vector3
@@ -172,6 +177,11 @@ namespace Vun.UnityUtils
             return max.Contains(coordinate.x, coordinate.y, coordinate.z, min);
         }
 
+        public static bool IsInRange(this in Vector3 coordinate, in Vector3 max, in Vector3 min = default)
+        {
+            return max.Contains(coordinate, min);
+        }
+
         #endregion
 
         #region Vector3Int
@@ -188,7 +198,7 @@ namespace Vun.UnityUtils
             return vector;
         }
 
-        public static Vector3Int WithZ(this Vector3Int  vector, int z)
+        public static Vector3Int WithZ(this Vector3Int vector, int z)
         {
             vector.z = z;
             return vector;
@@ -226,6 +236,13 @@ namespace Vun.UnityUtils
             return max.Contains(coordinate.x, coordinate.y, coordinate.z, min);
         }
 
+        /// <param name="max">Is exclusive</param>
+        /// <param name="min">Is inclusive</param>
+        public static bool IsInRange(this in Vector3Int coordinate, in Vector3Int max, in Vector3Int min = default)
+        {
+            return max.Contains(coordinate, min);
+        }
+
         #endregion
 
         #region Vector2
@@ -258,6 +275,11 @@ namespace Vun.UnityUtils
         public static bool Contains(this in Vector2 max, in Vector2 coordinate, in Vector2 min = default)
         {
             return max.Contains(coordinate.x, coordinate.y, min);
+        }
+
+        public static bool IsInRange(this in Vector2 coordinate, in Vector2 max, in Vector2 min = default)
+        {
+            return max.Contains(coordinate, min);
         }
 
         #endregion
@@ -296,6 +318,13 @@ namespace Vun.UnityUtils
         public static bool Contains(this in Vector2Int max, in Vector2Int coordinate, in Vector2Int min = default)
         {
             return max.Contains(coordinate.x, coordinate.y, min);
+        }
+
+        /// <param name="max">Is exclusive</param>
+        /// <param name="min">Is inclusive</param>
+        public static bool IsInRange(this in Vector2Int coordinate, in Vector2Int max, in Vector2Int min = default)
+        {
+            return max.Contains(coordinate, min);
         }
 
         #endregion

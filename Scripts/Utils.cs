@@ -5,6 +5,24 @@ namespace Vun.UnityUtils
 {
     public static class Utils
     {
+        private static readonly Vector2Int[] Offset2dArray =
+        {
+            new(0, 1),
+            new(1, 1),
+            new(1, 0),
+            new(1, -1),
+            new(0, -1),
+            new(-1, -1),
+            new(-1, 0),
+            new(-1, 1),
+        };
+
+        /// <summary>
+        /// Read-only array of 2D coordinate offsets starting from the top (0, 1) and goes clockwise.
+        /// Useful for checking adjacent coordinates on a grid
+        /// </summary>
+        public static ReadOnlyMemory<Vector2Int> Offsets2d => Offset2dArray;
+
         private struct Wrapper<T>
         {
             public T[] Value;
@@ -36,7 +54,10 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// A non-boxing version of <see cref="Enum.HasFlag"/>
+        /// A non-boxing but unsafe version of <see cref="Enum.HasFlag"/>.
+        /// Support any enum with numeric backing type from <see cref="byte"/> to <see cref="long"/> (<c>long</c>),
+        /// but will fail for larger type.
+        /// Useful for Burst-compiled code
         /// </summary>
         public static unsafe bool ContainsFlag<T>(this T container, T flag) where T : unmanaged, Enum
         {
