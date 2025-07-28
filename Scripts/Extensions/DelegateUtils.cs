@@ -14,7 +14,7 @@ namespace Vun.UnityUtils
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogException(e);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Vun.UnityUtils
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogException(e);
             }
         }
         
@@ -38,7 +38,7 @@ namespace Vun.UnityUtils
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogException(e);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Vun.UnityUtils
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogException(e);
             }
         }
 
@@ -62,7 +62,7 @@ namespace Vun.UnityUtils
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogException(e);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Vun.UnityUtils
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogException(e);
             }
         }
     }

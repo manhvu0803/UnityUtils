@@ -96,7 +96,7 @@ namespace Vun.UnityUtils.GenericFSM
         private void UpdateCurrentState()
         {
             // Unity should automatically use fixed delta time in FixedUpdate, so we don't have to change it
-            var deltaTime = UseUnscaledTime ? Time.unscaledTime : Time.deltaTime;
+            var deltaTime = UseUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             _stateMachine.Update(deltaTime);
         }
 
