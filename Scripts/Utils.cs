@@ -79,5 +79,12 @@ namespace Vun.UnityUtils
                     throw new ArgumentException("Invalid enum backing type");
             }
         }
+
+        public static Vector3 RandomPointInTriangle(in Vector3 p1, in Vector3 p2, in Vector3 p3)
+        {
+            var x = Mathf.Sqrt(UnityEngine.Random.Range(0, 1f));
+            var y = UnityEngine.Random.Range(0, 1f);
+            return (1 - x) * p1 + x * (1 - y) * p2 + x * y * p3;
+        }
     }
 }
