@@ -1,25 +1,21 @@
 ﻿using System;
-using Vun.UnityUtils;
 using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class GettingReadyState : TypeBasedCompositeState<Person, Type>, ICreator<IAutoState<Person, Type>, Type>
+    public class GettingReadyState : PersonState, IStateMachine<>
     {
-        private IUpdatableAutoStateMachine<Person,Type> _subStateMachine;
+        private IUpdatableStateMachine<Type> _subStateMachine;
 
-        protected override IUpdatableAutoStateMachine<Person, Type> SubStateMachine => _subStateMachine;
-
-        public override void Enter(IAutoStateMachine<Person, Type> stateMachine)
+        public override void Enter(PersonStateMachine stateMachine)
         {
             base.Enter(stateMachine);
-            _subStateMachine = new AutoCacheStateMachine<Person, Type>(Context, typeof(BrushingTeethState), this);
-            SubStateMachine.OnShutdown += OnSubMachineShutdown;
+            _subStateMachine = new CacheStateMachine<PersonStateMachine, Type, IState<PersonStateMachine>>(stateMachine, typeof(BrushingTeethState), CreateState);
         }
 
         public override void Update(float deltaTime)
         {
-            SubStateMachine.Update(deltaTime);
+            _subStateMachine.Update(deltaTime);
         }
 
         private void OnSubMachineShutdown()
@@ -28,7 +24,7 @@ namespace Sample.Scripts.StateMachine
             StateMachine.Shutdown();
         }
 
-        public IAutoState<Person, Type> Create(Type type)
+        public static IState<PersonStateMachine> CreateState(Type type)
         {
             if (type == typeof(BrushingTeethState))
             {

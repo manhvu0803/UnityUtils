@@ -1,9 +1,9 @@
 ﻿namespace Vun.UnityUtils.GenericFSM
 {
-    public interface IState<in T>
+    public interface IState<in TContext>
     {
         /// <param name="context">The target (host) of this state</param>
-        public void Enter(T context);
+        public void Enter(TContext context);
 
         public void Update(float deltaTime);
 

@@ -1,19 +1,23 @@
 ﻿using System;
-using Vun.UnityUtils;
 using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class PersonStateMachine : StateMachineComponent<Person, Type>, ICreator<IAutoState<Person, Type>, Type>
+    public class PersonStateMachine : StateMachineComponent<Person, Type>
     {
         private static readonly Type InitialStateType = typeof(WakingUpState);
 
-        protected override IUpdatableAutoStateMachine<Person, Type> CreateStateMachine()
+        protected override IUpdatableStateMachine<Type> CreateStateMachine()
         {
-            return new AutoCacheStateMachine<Person, Type>(Context, InitialStateType, this);
+            return new CacheStateMachine<PersonStateMachine, Type, IState<PersonStateMachine>>(this, InitialStateType, CreateState);
         }
 
-        public IAutoState<Person, Type> Create(Type type)
+        public void TransitionTo<T>() where T : IState<PersonStateMachine>
+        {
+            TransitionTo(typeof(T));
+        }
+
+        private static IState<PersonStateMachine> CreateState(Type type)
         {
             if (type == InitialStateType)
             {

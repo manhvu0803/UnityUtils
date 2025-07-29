@@ -1,4 +1,4 @@
-﻿namespace Vun.UnityUtils.GenericFSM
+﻿namespace Vun.UnityUtils
 {
     public enum UpdateType
     {

@@ -3,7 +3,7 @@ using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class WakingUpState : TypeBasedState<Person>
+    public class WakingUpState : PersonState
     {
         private readonly float _wakeUpTime;
 
@@ -12,7 +12,7 @@ namespace Sample.Scripts.StateMachine
             _wakeUpTime = wakeUpTime;
         }
 
-        public override void Enter(IAutoStateMachine<Person, Type> stateMachine)
+        public override void Enter(PersonStateMachine stateMachine)
         {
             base.Enter(stateMachine);
             Context.Wait(_wakeUpTime, WakeUp);
@@ -22,7 +22,7 @@ namespace Sample.Scripts.StateMachine
         private void WakeUp()
         {
             Context.Say("Holy shit i'm late");
-            TransitionTo<GettingReadyState>();
+            StateMachine.TransitionTo<GettingReadyState>();
         }
     }
 }

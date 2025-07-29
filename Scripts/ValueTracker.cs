@@ -36,12 +36,12 @@ namespace Vun.UnityUtils
         public readonly double MaxTotalValuePerInterval;
 
         /// <summary>
-        /// The minimum amount of time in seconds between <see cref="OnProcessingAccumulatedValue"/> broadcasts
+        /// The minimum amount of time in seconds between <see cref="ProcessingAccumulatedValue"/> broadcasts
         /// </summary>
         public readonly double MinBroadcastInterval;
 
         /// <summary>
-        /// The minimum value need to accumulate for <see cref="OnProcessingAccumulatedValue"/> broadcasts
+        /// The minimum value need to accumulate for <see cref="ProcessingAccumulatedValue"/> broadcasts
         /// </summary>
         public readonly double MinBroadcastValue;
 
@@ -53,7 +53,7 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Invoked in <see cref="Update"/> when the <see cref="MinBroadcastInterval"/> has passed and <see cref="MinBroadcastValue"/> is reached
         /// </summary>
-        public event Action<double> OnProcessingAccumulatedValue;
+        public event Action<double> ProcessingAccumulatedValue;
 
         private readonly Queue<ValueAddedRecord> _recordQueue = new();
 
@@ -74,9 +74,9 @@ namespace Vun.UnityUtils
         /// <param name="minBroadcastValue">See <see cref="MinBroadcastValue"/></param>
         /// <param name="maxValueBehaviour">See <see cref="MaxValueAction"/></param>
         /// <param name="addAmountProcessor">
-        /// Function to process the add amount in case it exceed <see cref="MaxTotalValuePerInterval"/>.
-        /// The 1st param is this instance, the 2nd param is the add amount, return value is a new add amount.
-        /// If null, the add amount will be ignored.
+        /// Function to process the add value in case it exceed <see cref="MaxTotalValuePerInterval"/>.
+        /// The 1st param is this instance, the 2nd param is the adding value, the return value is a new add value.
+        /// If null, the exceeded add value will be ignored.<br/>
         /// <see cref="CapAddAmount"/> can be used here to reduce the add amount instead
         /// </param>
         public ValueTracker(
@@ -126,7 +126,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Update the tracker and broadcast event if all condition is met (see <see cref="OnProcessingAccumulatedValue"/>)
+        /// Update the tracker and broadcast event if all condition is met (see <see cref="ProcessingAccumulatedValue"/>)
         /// </summary>
         public void Update()
         {
@@ -159,7 +159,7 @@ namespace Vun.UnityUtils
                 return;
             }
 
-            OnProcessingAccumulatedValue?.Invoke(AccumulatedValue);
+            ProcessingAccumulatedValue?.Invoke(AccumulatedValue);
             AccumulatedValue = 0;
             _lastBroadcastTime = timestamp;
         }

@@ -1,26 +1,27 @@
 ﻿namespace Vun.UnityUtils.GenericFSM
 {
     /// <summary>
-    /// A simple implementation of <see cref="IUpdatable{TState}"/>
+    /// A simple implementation of <see cref="IUpdatableStateMachine{TState}"/>
     /// </summary>
-    public class StateMachine<T> : IStateMachine<IState<T>>
+    public class StateMachine<TContext, TState> : IUpdatableStateMachine<TContext, TState>
+        where TState : IState<TContext>
     {
-        private readonly T _context;
+        public TContext Context { get; }
 
-        public IState<T> CurrentState { get; set; }
+        public TState CurrentState { get; set; }
 
-        public StateMachine(T context, IState<T> initialState)
+        public StateMachine(TContext context, TState initialState)
         {
-            _context = context;
+            Context = context;
             CurrentState = initialState;
-            initialState.Enter(_context);
+            initialState.Enter(Context);
         }
 
-        public void TransitionTo(IState<T> stateId)
+        public void TransitionTo(TState stateId)
         {
             CurrentState.Exit();
             CurrentState = stateId;
-            CurrentState.Enter(_context);
+            CurrentState.Enter(Context);
         }
 
         public void Update(float deltaTime)
@@ -33,5 +34,10 @@
             CurrentState.Exit();
             CurrentState = default;
         }
+    }
+
+    public class StateMachine<TContext> : StateMachine<TContext, IState<TContext>>
+    {
+        public StateMachine(TContext context, IState<TContext> initialState) : base(context, initialState) { }
     }
 }

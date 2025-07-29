@@ -1,4 +1,7 @@
 ﻿namespace Vun.UnityUtils.GenericFSM
 {
-    public interface IUpdatableStateMachine<in T> : IStateMachine<T>, IUpdatable { }
+    public interface IUpdatableStateMachine<out TContext, in TState> : IStateMachine<TContext, TState>
+    {
+        public void Update(float deltaTime);
+    }
 }

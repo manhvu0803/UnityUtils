@@ -7,7 +7,7 @@ namespace Vun.UnityUtils.GenericFSM
     /// </summary>
     public class State<T> : IState<T>
     {
-        private T _context;
+        private T Context;
 
         protected T Context
         {

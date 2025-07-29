@@ -15,32 +15,21 @@ namespace Vun.UnityUtils.GenericFSM
     /// For a large number of agents, use a pure C# implementation (such as <see cref="AutoStateMachine{T}"/>)
     /// </remarks>
     public abstract class StateMachineComponent<TContext, TState> :
-        MonoBehaviour,
-        IAutoStateMachine<TContext, TState>
+        MonoBehaviour, IStateMachine<TState>
         where TContext : Component
     {
         [field: SerializeField]
         public TContext Context { get; private set; }
 
-        public event Action<TState> OnStateChanged;
+        public event Action<TState> StateChanged;
 
-        public event Action OnShutdown;
+        public event Action AfterShutdown;
 
         public UpdateType UpdateMethod;
 
-#if ODIN_INSPECTOR
-        [ShowInInspector, ReadOnly]
-#endif
-        public TState CurrentState => _stateMachine == null ? default : _stateMachine.CurrentState;
-
         public bool UseUnscaledTime;
 
-        private IUpdatableAutoStateMachine<TContext, TState> _stateMachine;
-
-#if ODIN_INSPECTOR
-        [ShowInInspector, ReadOnly]
-#endif
-        private string CurrentStateInfo => CurrentState?.ToString() ?? "";
+        private IUpdatableStateMachine<TState> _stateMachine;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -52,22 +41,9 @@ namespace Vun.UnityUtils.GenericFSM
         protected virtual void Start()
         {
             _stateMachine = CreateStateMachine();
-            _stateMachine.OnStateChanged += OnSubMachineStateChanged;
-            _stateMachine.OnShutdown += OnSubMachineShutdown;
         }
 
-        protected abstract IUpdatableAutoStateMachine<TContext, TState> CreateStateMachine();
-
-        private void OnSubMachineStateChanged(TState stateId)
-        {
-            OnStateChanged?.Invoke(stateId);
-        }
-
-        private void OnSubMachineShutdown()
-        {
-            enabled = false;
-            OnShutdown?.Invoke();
-        }
+        protected abstract IUpdatableStateMachine<TState> CreateStateMachine();
 
         protected virtual void Update()
         {
@@ -103,10 +79,11 @@ namespace Vun.UnityUtils.GenericFSM
         /// <summary>
         /// Exit the <see cref="CurrentState"/>, enter <c>state</c> and enable this <see cref="MonoBehaviour"/>
         /// </summary>
-        public void TransitionTo(TState stateId)
+        public void TransitionTo(TState state)
         {
-            _stateMachine.TransitionTo(stateId);
+            _stateMachine.TransitionTo(state);
             enabled = true;
+            StateChanged?.Invoke(state);
         }
 
         protected virtual void OnDestroy()
@@ -123,6 +100,7 @@ namespace Vun.UnityUtils.GenericFSM
         public void Shutdown()
         {
             _stateMachine.Shutdown();
+            AfterShutdown?.Invoke();
         }
     }
 }
