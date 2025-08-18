@@ -5,9 +5,9 @@ namespace Vun.UnityUtils.GenericFSM
     public class AutoStateMachine<TContext, TState> : IUpdatableStateMachine<TContext, TState>
         where TState : IState<IUpdatableStateMachine<TContext, TState>>
     {
-        private event Action<TState> StateTransitioned;
+        private event Action<TState> StateChanged;
 
-        private event Action AfterShutdown;
+        private event Action ShutdownCompleted;
 
         public TContext Context { get; }
 
@@ -20,24 +20,24 @@ namespace Vun.UnityUtils.GenericFSM
             initialState.Enter(this);
         }
 
-        public void TransitionTo(TState stateId)
+        public void TransitionTo(TState state)
         {
-            CurrentState.Exit();
-            CurrentState = stateId;
+            CurrentState.Exit(this);
+            CurrentState = state;
             CurrentState.Enter(this);
-            StateTransitioned?.Invoke(stateId);
+            StateChanged?.Invoke(state);
         }
 
         public void Update(float deltaTime)
         {
-            CurrentState.Update(deltaTime);
+            CurrentState.Update(this, deltaTime);
         }
 
         public void Shutdown()
         {
-            CurrentState.Exit();
+            CurrentState.Exit(this);
             CurrentState = default;
-            AfterShutdown?.Invoke();
+            ShutdownCompleted?.Invoke();
         }
     }
 }

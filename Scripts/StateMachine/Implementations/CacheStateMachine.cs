@@ -6,25 +6,24 @@ namespace Vun.UnityUtils.GenericFSM
     /// <summary>
     /// An implementation of <see cref="IStateMachine{TState}"/> that automatically cache states upon new state transition
     /// </summary>
-    public class CacheAutoStateMachine<TContext, TStateId, TState> :
-        IUpdatableStateMachine<TContext, TStateId>
-        where TState : IState<IUpdatableStateMachine<TContext, TStateId>>
+    public class CacheStateMachine<TContext, TStateId, TState> : IUpdatableStateMachine<TContext, TStateId>
+        where TState : IState<TContext>
     {
         private readonly Dictionary<TStateId, TState> _states = new();
 
-        private readonly StateMachine<IUpdatableStateMachine<TContext, TStateId>, TState> _stateMachine;
+        private readonly StateMachine<TContext, TState> _stateMachine;
 
         private readonly Func<TStateId, TState> _stateCreator;
 
         public TContext Context { get; }
 
-        public CacheAutoStateMachine(TContext context, TStateId initialStateId, Func<TStateId, TState> stateCreator)
+        public CacheStateMachine(TContext context, TStateId initialStateId, Func<TStateId, TState> stateCreator)
         {
             _stateCreator = stateCreator;
             var initialState = stateCreator.Invoke(initialStateId);
             _states[initialStateId] = initialState;
             Context = context;
-            _stateMachine = new StateMachine<IUpdatableStateMachine<TContext, TStateId>, TState>(this, initialState);
+            _stateMachine = new StateMachine<TContext, TState>(context, initialState);
         }
 
         public void TransitionTo(TStateId stateId)

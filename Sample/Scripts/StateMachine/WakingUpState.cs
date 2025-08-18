@@ -1,7 +1,4 @@
-﻿using System;
-using Vun.UnityUtils.GenericFSM;
-
-namespace Sample.Scripts.StateMachine
+﻿namespace Sample.Scripts.StateMachine
 {
     public class WakingUpState : PersonState
     {
@@ -12,9 +9,8 @@ namespace Sample.Scripts.StateMachine
             _wakeUpTime = wakeUpTime;
         }
 
-        public override void Enter(PersonStateMachine stateMachine)
+        protected override void Enter()
         {
-            base.Enter(stateMachine);
             Context.Wait(_wakeUpTime, WakeUp);
             Context.Say("Mm");
         }
@@ -22,7 +18,7 @@ namespace Sample.Scripts.StateMachine
         private void WakeUp()
         {
             Context.Say("Holy shit i'm late");
-            StateMachine.TransitionTo<GettingReadyState>();
+            TransitionTo<GettingReadyState>();
         }
     }
 }

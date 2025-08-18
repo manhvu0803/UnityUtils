@@ -1,20 +1,16 @@
-﻿using System;
-using Vun.UnityUtils.GenericFSM;
-
-namespace Sample.Scripts.StateMachine
+﻿namespace Sample.Scripts.StateMachine
 {
-    internal class EatingBreakfastState : TypeBasedState<Person>
+    internal class EatingBreakfastState : PersonState
     {
         private float _timeToSay;
 
-        public override void Enter(IAutoStateMachine<Person, Type> stateMachine)
+        protected override void Enter()
         {
-            base.Enter(stateMachine);
             Context.Say("Eating");
             Context.Wait(5, FinishEating);
         }
 
-        public override void Update(float deltaTime)
+        protected override void Update(float deltaTime)
         {
             if (_timeToSay <= 0)
             {

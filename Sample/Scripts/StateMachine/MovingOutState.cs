@@ -1,15 +1,13 @@
-﻿using System;
-using Vun.UnityUtils.GenericFSM;
+﻿using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class MovingOutState : TypeBasedState<Person>
+    public class MovingOutState : PersonState
     {
         private IState<Person> _innerState;
 
-        public override void Enter(IAutoStateMachine<Person, Type> stateMachine)
+        protected override void Enter()
         {
-            base.Enter(stateMachine);
             _innerState = new MovingState(Context.GetTarget(), OnDoneMoving);
             _innerState.Enter(Context);
         }
@@ -19,15 +17,14 @@ namespace Sample.Scripts.StateMachine
             StateMachine.Shutdown();
         }
 
-        public override void Update(float deltaTime)
+        protected override void Update(float deltaTime)
         {
-            _innerState.Update(deltaTime);
+            _innerState.Update(Context, deltaTime);
         }
 
-        public override void Exit()
+        protected override void Exit()
         {
-            base.Exit();
-            _innerState.Exit();
+            _innerState.Exit(Context);
         }
     }
 }

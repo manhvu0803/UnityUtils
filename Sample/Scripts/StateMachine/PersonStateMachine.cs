@@ -7,9 +7,12 @@ namespace Sample.Scripts.StateMachine
     {
         private static readonly Type InitialStateType = typeof(WakingUpState);
 
-        protected override IUpdatableStateMachine<Type> CreateStateMachine()
+        protected override IUpdatableStateMachine<Person, Type> CreateStateMachine()
         {
-            return new CacheStateMachine<PersonStateMachine, Type, IState<PersonStateMachine>>(this, InitialStateType, CreateState);
+            var stateMachine = new CacheAutoStateMachine<Person, Type, PersonState>(Context, InitialStateType, CreateState);
+            stateMachine.ShutdownCompleted += Shutdown;
+            stateMachine.StateChanged += InvokeStateChanged;
+            return stateMachine;
         }
 
         public void TransitionTo<T>() where T : IState<PersonStateMachine>
@@ -17,7 +20,7 @@ namespace Sample.Scripts.StateMachine
             TransitionTo(typeof(T));
         }
 
-        private static IState<PersonStateMachine> CreateState(Type type)
+        private static PersonState CreateState(Type type)
         {
             if (type == InitialStateType)
             {

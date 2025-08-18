@@ -19,19 +19,19 @@
 
         public void TransitionTo(TState stateId)
         {
-            CurrentState.Exit();
+            CurrentState.Exit(Context);
             CurrentState = stateId;
             CurrentState.Enter(Context);
         }
 
         public void Update(float deltaTime)
         {
-            CurrentState.Update(deltaTime);
+            CurrentState.Update(Context, deltaTime);
         }
 
         public void Shutdown()
         {
-            CurrentState.Exit();
+            CurrentState.Exit(Context);
             CurrentState = default;
         }
     }

@@ -3,17 +3,18 @@ using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class GettingReadyState : PersonState, IStateMachine<>
+    public class GettingReadyState : PersonState
     {
-        private IUpdatableStateMachine<Type> _subStateMachine;
+        private IUpdatableStateMachine<Person, Type> _subStateMachine;
 
-        public override void Enter(PersonStateMachine stateMachine)
+        protected override void Enter()
         {
-            base.Enter(stateMachine);
-            _subStateMachine = new CacheStateMachine<PersonStateMachine, Type, IState<PersonStateMachine>>(stateMachine, typeof(BrushingTeethState), CreateState);
+            var subStateMachine = new CacheAutoStateMachine<Person, Type, PersonState>(Context, typeof(BrushingTeethState), CreateState);
+            subStateMachine.ShutdownCompleted += OnSubMachineShutdown;
+            _subStateMachine = subStateMachine;
         }
 
-        public override void Update(float deltaTime)
+        protected override void Update(float deltaTime)
         {
             _subStateMachine.Update(deltaTime);
         }
@@ -24,7 +25,7 @@ namespace Sample.Scripts.StateMachine
             StateMachine.Shutdown();
         }
 
-        public static IState<PersonStateMachine> CreateState(Type type)
+        public static PersonState CreateState(Type type)
         {
             if (type == typeof(BrushingTeethState))
             {

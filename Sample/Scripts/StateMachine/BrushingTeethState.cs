@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class BrushingTeethState : TypeBasedState<Person>
+    public class BrushingTeethState : PersonState
     {
         private Vector3 _brushPosition;
 
@@ -12,9 +11,8 @@ namespace Sample.Scripts.StateMachine
 
         private bool _isBrushing;
 
-        public override void Enter(IAutoStateMachine<Person, Type> stateMachine)
+        protected override void Enter()
         {
-            base.Enter(stateMachine);
             _innerState = new MovingState(Context.GetTarget(), OnDoneMoving);
             _innerState.Enter(Context);
         }
@@ -27,7 +25,7 @@ namespace Sample.Scripts.StateMachine
             _brushPosition = Context.transform.position;
         }
 
-        public override void Update(float deltaTime)
+        protected override void Update(float deltaTime)
         {
             if (_isBrushing)
             {
@@ -36,7 +34,7 @@ namespace Sample.Scripts.StateMachine
                 return;
             }
 
-            _innerState.Update(deltaTime);
+            _innerState.Update(Context, deltaTime);
         }
 
         private void FinishBrushing()

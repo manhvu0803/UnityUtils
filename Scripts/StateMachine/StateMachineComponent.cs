@@ -14,8 +14,7 @@ namespace Vun.UnityUtils.GenericFSM
     /// This would scale badly due to its subscription to multiple update methods.
     /// For a large number of agents, use a pure C# implementation (such as <see cref="AutoStateMachine{T}"/>)
     /// </remarks>
-    public abstract class StateMachineComponent<TContext, TState> :
-        MonoBehaviour, IStateMachine<TState>
+    public abstract class StateMachineComponent<TContext, TState> : MonoBehaviour, IStateMachine<TContext, TState>
         where TContext : Component
     {
         [field: SerializeField]
@@ -23,13 +22,13 @@ namespace Vun.UnityUtils.GenericFSM
 
         public event Action<TState> StateChanged;
 
-        public event Action AfterShutdown;
+        public event Action ShutdownCompleted;
 
         public UpdateType UpdateMethod;
 
         public bool UseUnscaledTime;
 
-        private IUpdatableStateMachine<TState> _stateMachine;
+        private IUpdatableStateMachine<TContext, TState> _stateMachine;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -43,7 +42,7 @@ namespace Vun.UnityUtils.GenericFSM
             _stateMachine = CreateStateMachine();
         }
 
-        protected abstract IUpdatableStateMachine<TState> CreateStateMachine();
+        protected abstract IUpdatableStateMachine<TContext, TState> CreateStateMachine();
 
         protected virtual void Update()
         {
@@ -71,7 +70,7 @@ namespace Vun.UnityUtils.GenericFSM
 
         private void UpdateCurrentState()
         {
-            // Unity should automatically use fixed delta time in FixedUpdate, so we don't have to change it
+            // Unity should automatically use fixed delta time in FixedUpdate, so we don't have to account for it
             var deltaTime = UseUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             _stateMachine.Update(deltaTime);
         }
@@ -82,6 +81,11 @@ namespace Vun.UnityUtils.GenericFSM
         public void TransitionTo(TState state)
         {
             _stateMachine.TransitionTo(state);
+            InvokeStateChanged(state);
+        }
+
+        protected void InvokeStateChanged(TState state)
+        {
             enabled = true;
             StateChanged?.Invoke(state);
         }
@@ -100,7 +104,8 @@ namespace Vun.UnityUtils.GenericFSM
         public void Shutdown()
         {
             _stateMachine.Shutdown();
-            AfterShutdown?.Invoke();
+            enabled = false;
+            ShutdownCompleted?.Invoke();
         }
     }
 }

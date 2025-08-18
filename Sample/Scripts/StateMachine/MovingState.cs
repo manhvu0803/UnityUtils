@@ -16,7 +16,7 @@ namespace Sample.Scripts.StateMachine
             _doneMovingCallback = doneMovingCallback;
         }
 
-        public override void Update(float deltaTime)
+        protected override void Update(float deltaTime)
         {
             var transform = Context.transform;
             var t = Context.MoveSpeed * deltaTime;

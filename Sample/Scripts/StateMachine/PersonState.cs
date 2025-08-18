@@ -1,11 +1,13 @@
-﻿using Vun.UnityUtils.GenericFSM;
+﻿using System;
+using Vun.UnityUtils.GenericFSM;
 
 namespace Sample.Scripts.StateMachine
 {
-    public class PersonState : State<PersonStateMachine>
+    public class PersonState : AutoState<Person, Type>
     {
-        protected PersonStateMachine StateMachine => base.Context;
-
-        protected new Person Context => StateMachine.Context;
+        protected void TransitionTo<TState>() where TState : IState<IStateMachine<Person, Type>>
+        {
+            StateMachine.TransitionTo(typeof(TState));
+        }
     }
 }
