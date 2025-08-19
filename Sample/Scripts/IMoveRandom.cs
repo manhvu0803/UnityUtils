@@ -1,4 +1,4 @@
-namespace Vun.UnityUtils.sample
+namespace Vun.UnityUtils.Sample
 {
     public interface IMoveRandom
     {

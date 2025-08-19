@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using Vun.UnityUtils;
-using Vun.UnityUtils.sample;
 
-namespace Sample.Scripts
+namespace Vun.UnityUtils.Sample
 {
     public class FillSample2 : MonoBehaviour
     {

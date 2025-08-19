@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Vun.UnityUtils.sample
+namespace Vun.UnityUtils.Sample
 {
     public class LocatorSample : MonoBehaviour
     {

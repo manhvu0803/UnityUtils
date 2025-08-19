@@ -120,7 +120,7 @@ namespace Vun.UnityUtils
 
             var fieldValue = component.GetComponent(fieldInfo.FieldType, attribute.FillOption, attribute.IncludeInactive);
             fieldInfo.SetValue(component, fieldValue);
-            LogSuccess(component, fieldInfo);
+            Finish(component, fieldInfo);
         }
 
         private static void ProcessCollection(MonoBehaviour component, FieldInfo fieldInfo, AutoFillAttribute attribute)
@@ -155,7 +155,7 @@ namespace Vun.UnityUtils
                 }
                 catch (MissingMethodException)
                 {
-                    Debug.LogError($"{fieldInfo.FieldType.Name} ({fieldInfo.DeclaringType}.{fieldInfo.Name}) doesn't have a default constructor nor a IEnumerable constructor");
+                    LogNoConstructorError(fieldInfo);
                     return;
                 }
 
@@ -170,7 +170,14 @@ namespace Vun.UnityUtils
             }
 
             fieldInfo.SetValue(component, fieldValue);
-            LogSuccess(component, fieldInfo);
+            Finish(component, fieldInfo);
+        }
+
+        private static void LogNoConstructorError(FieldInfo fieldInfo)
+        {
+            Debug.LogError($"{fieldInfo.FieldType.Name} ({fieldInfo.DeclaringType}.{fieldInfo.Name}) doesn't have a default constructor,"
+                + "nor an IEnumerable constructor."
+                + "\nPlease add at least 1 of those constructors or remove [AutoFill] attribute from this field");
         }
 
         private static void ProcessArrayField(MonoBehaviour component, FieldInfo fieldInfo, AutoFillAttribute attribute)
@@ -189,10 +196,10 @@ namespace Vun.UnityUtils
             }
 
             fieldInfo.SetValue(component, component.GetComponents(elementType, attribute.FillOption, attribute.IncludeInactive));
-            LogSuccess(component, fieldInfo);
+            Finish(component, fieldInfo);
         }
 
-        private static void LogSuccess(MonoBehaviour component, FieldInfo fieldInfo)
+        private static void Finish(MonoBehaviour component, FieldInfo fieldInfo)
         {
             EditorUtility.SetDirty(component);
             var fieldName = fieldInfo.Name.Replace("<", "").Replace(">k__BackingField", "");

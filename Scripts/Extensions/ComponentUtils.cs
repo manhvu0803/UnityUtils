@@ -44,7 +44,7 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Destroy <c>unityObject</c>, whether in build, play mode or edit mode
         /// </summary>
-        public static void DestroyUnconditionally(this Object unityObject)
+        public static void DestroyUnconditionally(this Object unityObject, bool allowDestroyingAssets = false)
         {
             if (unityObject == null)
             {
@@ -54,7 +54,7 @@ namespace Vun.UnityUtils
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
-                Object.DestroyImmediate(unityObject);
+                Object.DestroyImmediate(unityObject, allowDestroyingAssets);
                 return;
             }
 #endif

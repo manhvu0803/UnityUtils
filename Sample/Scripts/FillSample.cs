@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Sample.Scripts;
 using UnityEngine;
 
-namespace Vun.UnityUtils.sample
+namespace Vun.UnityUtils.Sample
 {
     public class FillSample : MonoBehaviour, IMoveRandom
     {
@@ -17,8 +16,8 @@ namespace Vun.UnityUtils.sample
         [field: SerializeField, AutoFill(FillOption.FromChildren)]
         public List<Rigidbody> ChildrenBodies { get; private set; }
 
-        [field: SerializeField, AutoFill(FillOption.FromScene, includeInactive: true)]
-        private CustomCollection<Rigidbody> _bodyBuffer = new();
+        [field: SerializeField, AutoFill(FillOption.FromScene, includeInactive: false)]
+        private CustomCollection<Rigidbody> _bodyBuffer = new(2);
 
         [SerializeField, AutoFill]
         private FillSample2 _fillSample2;
@@ -48,6 +47,11 @@ namespace Vun.UnityUtils.sample
     {
         [SerializeField]
         private List<T> _list = new();
+
+        public CustomCollection(int size)
+        {
+            _list.Capacity = size;
+        }
 
         public IEnumerator<T> GetEnumerator()
         {

@@ -1,7 +1,7 @@
 namespace Vun.UnityUtils
 {
     /// <summary>
-    /// Represent different scope for finding component with <see cref="AutoFillAttribute"/> or <see cref="AutoFillUtils"/>
+    /// Represent different scopes for finding component with <see cref="AutoFillAttribute"/> or <see cref="AutoFillUtils"/>
     /// </summary>
     public enum FillOption
     {
@@ -24,7 +24,8 @@ namespace Vun.UnityUtils
         FromParent,
 
         /// <summary>
-        /// From the whole hierarchy containing the host <see cref="UnityEngine.GameObject"/>
+        /// From the whole hierarchy containing the host <see cref="UnityEngine.GameObject"/>.
+        /// Equivalent to <see cref="AutoFillUtils.GetComponentInHierarchy"/>
         /// </summary>
         FromHierarchy,
 

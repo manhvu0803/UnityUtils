@@ -32,10 +32,15 @@ namespace Vun.UnityUtils
                 FillOption.FromGameObject => component.GetComponent<T>(),
                 FillOption.FromChildren => component.GetComponentInChildren<T>(includeInactive),
                 FillOption.FromParent => component.GetComponentInParent<T>(includeInactive),
-                FillOption.FromHierarchy => component.transform.root.GetComponentInChildren<T>(includeInactive),
+                FillOption.FromHierarchy => component.GetComponentInHierarchy<T>(includeInactive),
                 FillOption.FromScene => Object.FindAnyObjectByType<T>(GetEnum(includeInactive)),
                 _ => null
             };
+        }
+
+        public static T GetComponentInHierarchy<T>(this Component component, bool includeInactive)
+        {
+            return component.transform.root.GetComponentInParent<T>(includeInactive);
         }
 
         public static Object GetComponent(
@@ -49,10 +54,15 @@ namespace Vun.UnityUtils
                 FillOption.FromGameObject => component.GetComponent(type),
                 FillOption.FromChildren => component.GetComponentInChildren(type, includeInactive),
                 FillOption.FromParent => component.GetComponentInParent(type, includeInactive),
-                FillOption.FromHierarchy => component.transform.root.GetComponentInParent(type, includeInactive),
+                FillOption.FromHierarchy => component.GetComponentInHierarchy(type, includeInactive),
                 FillOption.FromScene => Object.FindAnyObjectByType(type, GetEnum(includeInactive)),
                 _ => null
             };
+        }
+
+        public static Component GetComponentInHierarchy(this Component component, Type type, bool includeInactive)
+        {
+            return component.transform.root.GetComponentInParent(type, includeInactive);
         }
 
         #endregion
@@ -87,12 +97,19 @@ namespace Vun.UnityUtils
             };
         }
 
+        /// <summary>
+        /// Find all components of type <c>T</c> in hierarchy of host <see cref="GameObject"/> of <c>component</c>
+        /// </summary>
         public static T[] GetComponentsInHierarchy<T>(this Component component, bool includeInactive = true) where T : Component
         {
             return component.transform.root.GetComponentsInChildren<T>(includeInactive);
         }
 
-        private static void GetComponentInHierarchy<T>(this Component component, List<T> buffer, bool includeInactive = true) where T : Component
+        /// <summary>
+        /// Find all components of type <c>T</c> in hierarchy of host <see cref="GameObject"/> of <c>component</c>
+        /// and add to <c>buffer</c>
+        /// </summary>
+        public static void GetComponentsInHierarchy<T>(this Component component, List<T> buffer, bool includeInactive = true) where T : Component
         {
             component.transform.root.GetComponentsInChildren(includeInactive, buffer);
         }
@@ -144,7 +161,6 @@ namespace Vun.UnityUtils
         /// If <c>target</c> is null, find a component of type <c>T</c> and assign it to <c>target</c>.
         /// Should be use in <c>OnValidate</c> or editor functions
         /// </summary>
-        /// <typeparam name="T">Type of targeted component</typeparam>
         /// <param name="component">The search starting point</param>
         /// <param name="target">If null or empty, find components according to <c>option</c> and assign to this</param>
         public static void Fill<T>(
