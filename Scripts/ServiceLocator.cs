@@ -26,7 +26,7 @@ namespace Vun.UnityUtils
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (IsCommonInterface(interfaceType))
+                if (interfaceType.IsCommonInterface())
                 {
                     continue;
                 }
@@ -35,7 +35,7 @@ namespace Vun.UnityUtils
                 Services[interfaceType] = service;
             }
 
-            while (type != null && !IsCommonType(type))
+            while (type != null && !type.IsCommonType())
             {
                 CheckRegisteredServices(type);
                 Services[type] = service;
@@ -98,13 +98,13 @@ namespace Vun.UnityUtils
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (!IsCommonInterface(interfaceType))
+                if (!interfaceType.IsCommonInterface())
                 {
                     RemoveIfMatch(service, interfaceType);
                 }
             }
 
-            while (type != null && !IsCommonType(type))
+            while (type != null && !type.IsCommonType())
             {
                 RemoveIfMatch(service, type);
                 type = type.BaseType;
@@ -117,37 +117,6 @@ namespace Vun.UnityUtils
         public static void Remove<T>(object service)
         {
             RemoveIfMatch(service, service.GetType());
-        }
-
-        private static bool IsCommonType(Type type)
-        {
-#if UNITY_5_3_OR_NEWER
-            return type == typeof(object)
-                || type == typeof(MonoBehaviour)
-                || type == typeof(GameObject)
-                || type == typeof(ScriptableObject)
-                || type == typeof(Component)
-                || type == typeof(UnityEngine.Object);
-#else
-            return type == typeof(object);
-#endif
-        }
-
-        private static bool IsCommonInterface(Type type)
-        {
-            return type == typeof(IDisposable)
-                || type == typeof(ICloneable)
-                || type == typeof(IList<>)
-                || type == typeof(IEnumerable<>)
-                || type == typeof(ICollection<>)
-                || type == typeof(IDictionary<,>)
-                || type == typeof(IList)
-                || type == typeof(IEnumerable)
-                || type == typeof(ICollection)
-                || type == typeof(IDictionary)
-                || type == typeof(IReadOnlyCollection<>)
-                || type == typeof(IReadOnlyDictionary<,>)
-                || type == typeof(IReadOnlyList<>);
         }
 
         private static void RemoveIfMatch(object target, Type type)

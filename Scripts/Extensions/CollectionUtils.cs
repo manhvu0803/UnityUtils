@@ -42,6 +42,13 @@ namespace Vun.UnityUtils
             list.RemoveAt(list.Count - 1);
         }
 
+        public static T[] ToArray<T>(ICollection<T> collection, int arrayIndex = 0)
+        {
+            var array = new T[collection.Count];
+            collection.CopyTo(array, arrayIndex);
+            return array;
+        }
+
         /// <summary>
         /// Get a random element from <c>list</c>
         /// </summary>

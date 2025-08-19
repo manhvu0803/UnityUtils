@@ -5,7 +5,7 @@ namespace Vun.UnityUtils
 {
     public sealed class CombineMeshBehaviour : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField, AutoFill(FillOption.FromScene)]
         private List<MeshFilter> _meshes;
 
         public bool AutoRunAtStart;
@@ -15,11 +15,6 @@ namespace Vun.UnityUtils
         public bool AddMeshCollider;
 
         public bool IsMeshColliderConvex;
-
-        private void OnValidate()
-        {
-            this.Fill(ref _meshes);
-        }
 
         private void Start()
         {

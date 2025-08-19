@@ -8,10 +8,11 @@ namespace Vun.UnityUtils
         /// <summary>
         /// Find and return the first asset of type T 
         /// </summary>
-        /// <returns>Asset of type <c>T</c> or <c>default</c> if none is found</returns>
+        /// <returns>Asset of type <c>T</c> or <c>null</c> if none is found</returns>
         public static T FindAsset<T>(string query = "") where T : Object
         {
-            return FindAssets<T>(query)[0];
+            var assets = FindAssets<T>(query);
+            return assets is { Length: > 0 } ? assets[0] : null;
         }
         
         /// <summary>
