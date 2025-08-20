@@ -9,28 +9,33 @@ namespace Vun.UnityUtils
         /// Find and return the first asset of type T 
         /// </summary>
         /// <returns>Asset of type <c>T</c> or <c>null</c> if none is found</returns>
-        public static T FindAsset<T>(string query = "") where T : Object
+        public static T FindAsset<T>(string query = "", string[] folders = null) where T : Object
         {
-            var assets = FindAssets<T>(query);
-            return assets is { Length: > 0 } ? assets[0] : null;
+            var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name} {query}", folders);
+            return guids is { Length: > 0 } ? guids[0].GuidToAsset<T>() : null;
         }
         
         /// <summary>
         /// Find all assets of type <c>T</c>
         /// </summary>
         /// <returns>Non-null array of type <c>T</c></returns>
-        public static T[] FindAssets<T>(string query = "") where T : Object
+        public static T[] FindAssets<T>(string query = "", string[] folders = null) where T : Object
         {
-            var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name} {query}");
-            var result = new T[guids.Length];
+            var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name} {query}", folders);
+            var assets = new T[guids.Length];
 
             for (var i = 0; i < guids.Length; ++i)
             {
-                var assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
-                result[i] = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                assets[i] = guids[i].GuidToAsset<T>();
             }
 
-            return result;
+            return assets;
+        }
+
+        public static T GuidToAsset<T>(this string guid) where T : Object
+        {
+            var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            return AssetDatabase.LoadAssetAtPath<T>(assetPath);
         }
     }
 }
