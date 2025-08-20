@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-#if UNITY_COLLECTION_EXISTS
-using Unity.Collections;
-#endif
 
 namespace Vun.UnityUtils
 {
@@ -85,7 +82,38 @@ namespace Vun.UnityUtils
             return list is { Count: > 0 } ? list[random.Next(0, list.Count)] : default;
         }
 
-#if UNITY_COLLECTION_EXISTS
+        /// <summary>
+        /// Add <c>default</c> value or remove items from the end of <c>list</c>,
+        /// until <see cref="IList{T}.Count"/> is equal to <c>length</c>
+        /// </summary>
+        /// <exception cref="ArgumentException">When <c>list</c> is read-only</exception>
+        /// <exception cref="ArgumentOutOfRangeException">When <c>length</c> is less than 0</exception>
+        public static void SetLength<T>(this IList<T> list, int length)
+        {
+#if DEBUG
+            if (list.IsReadOnly)
+            {
+                throw new ArgumentException("Cannot set the length of a read-only list.");
+            }
+
+            if (length <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid length: {length}");
+            }
+#endif
+
+            while (list.Count < length)
+            {
+                list.Add(default);
+            }
+
+            while (list.Count > length)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+        }
+
+#if UNITY_MATH_EXISTS
         /// <summary>
         /// Get a random element from <c>list</c>.
         /// Will not change the <see cref="Unity.Mathematics.Random.state"/> of <c>random</c>

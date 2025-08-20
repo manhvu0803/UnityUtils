@@ -28,6 +28,11 @@
             "name": "com.unity.burst",
             "expression": "0.0.0",
             "define": "UNITY_BURST_EXISTS"
+        },
+        {
+            "name": "com.unity.mathematics",
+            "expression": "0.0.0",
+            "define": "UNITY_MATH_EXISTS"
         }
     ],
     "noEngineReferences": false
