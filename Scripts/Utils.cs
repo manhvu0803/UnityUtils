@@ -29,7 +29,7 @@ namespace Vun.UnityUtils
         }
 
         /// <summary>
-        /// Parse an JSON-style array string to an <see cref="Array"/> using Unity <see cref="JsonUtility"/>
+        /// Parse an JSON-style array string to <see cref="Array"/> using Unity <see cref="JsonUtility"/>
         /// </summary>
         /// <param name="json">JSON-style array string ("[1, 2, 3, 4]", .etc)</param>
         public static T[] ArrayFromJson<T>(string json)
@@ -55,7 +55,7 @@ namespace Vun.UnityUtils
 
         /// <summary>
         /// A non-boxing but unsafe version of <see cref="Enum.HasFlag"/>.
-        /// Support any enum with numeric backing type from <see cref="byte"/> to <see cref="long"/> (<c>long</c>),
+        /// Support any enum with numeric backing type from <see cref="byte"/> to <see cref="long"/>,
         /// but will fail for larger type.
         /// Useful for Burst-compiled code
         /// </summary>
