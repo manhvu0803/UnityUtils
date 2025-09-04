@@ -82,35 +82,85 @@ namespace Vun.UnityUtils
 
         private static void ProcessComponent(MonoBehaviour component)
         {
-            var fields = component.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var serializedComponent = new SerializedObject(component);
+            var property = serializedComponent.GetIterator();
+            var lastProperty = property;
+            var hierarchy = new Stack<SerializedProperty>();
 
-            foreach (var field in fields)
+            while (property.NextVisible(enterChildren: true))
             {
-                if (Attribute.GetCustomAttribute(field, typeof(AutoFillAttribute)) is AutoFillAttribute attribute)
+                if (lastProperty.depth < property.depth)
                 {
-                    ProcessField(component, field, attribute);
+                    hierarchy.Push(lastProperty);
                 }
+                else
+                {
+                    PopToDepth(hierarchy, property.depth);
+                }
+
+                switch (property.propertyType)
+                {
+                    case SerializedPropertyType.Generic when property.isArray:
+                    {
+                        var parent = hierarchy.Count <= 0 ? component : hierarchy.Peek().managedReferenceValue;
+                        ProcessArrayProperty(component, parent, property);
+                        break;
+                    }
+                    case SerializedPropertyType.ObjectReference:
+                    {
+                        var parent = hierarchy.Count <= 0 ? component : hierarchy.Peek().managedReferenceValue;
+                        ProcessProperty(component, parent, property);
+                        break;
+                    }
+                }
+
+                lastProperty = property;
+            }
+
+            serializedComponent.ApplyModifiedProperties();
+        }
+
+        private static void PopToDepth(Stack<SerializedProperty> hierarchy, int depth)
+        {
+            while (hierarchy.TryPeek(out var parentProperty) && parentProperty.depth > depth)
+            {
+                hierarchy.Pop();
             }
         }
 
-        private static void ProcessField(MonoBehaviour component, FieldInfo fieldInfo, AutoFillAttribute attribute)
+        private static void ProcessArrayProperty(MonoBehaviour component, object parentProperty, SerializedProperty property)
         {
-            if (fieldInfo.FieldType.IsArray)
+            if (property.arraySize > 0)
             {
-                ProcessArrayField(component, fieldInfo, attribute);
                 return;
             }
 
-            if (GetGenericCollectionDefinition(fieldInfo.FieldType) != null)
+            var fieldInfo = parentProperty.GetType().GetField(property.name);
+
+            if (!fieldInfo.FieldType.GetElementType()!.IsSubclassOf(typeof(Component)))
             {
-                ProcessCollection(component, fieldInfo, attribute);
+                Debug.LogError($"{nameof(AutoFillAttribute)} can't be applied to {fieldInfo.DeclaringType}.{fieldInfo.Name}");
                 return;
             }
 
-            if (fieldInfo.GetValue(component) as UnityEngine.Object != null)
+            if (!fieldInfo.TryGetAttribute(out AutoFillAttribute autoFill))
             {
                 return;
             }
+
+            var type = Type.GetType(property.arrayElementType);
+            var components = component.GetComponents(type, autoFill.FillOption, autoFill.IncludeInactive);
+            
+        }
+
+        private static void ProcessProperty(MonoBehaviour component, object parentProperty, SerializedProperty property)
+        {
+            if (property.objectReferenceValue != null)
+            {
+                return;
+            }
+
+            var fieldInfo = parentProperty.GetType().GetField(property.name);
 
             if (!fieldInfo.FieldType.IsSubclassOf(typeof(Component)))
             {
@@ -118,84 +168,12 @@ namespace Vun.UnityUtils
                 return;
             }
 
-            var fieldValue = component.GetComponent(fieldInfo.FieldType, attribute.FillOption, attribute.IncludeInactive);
-            fieldInfo.SetValue(component, fieldValue);
-            Finish(component, fieldInfo);
-        }
-
-        private static void ProcessCollection(MonoBehaviour component, FieldInfo fieldInfo, AutoFillAttribute attribute)
-        {
-            var fieldValue = fieldInfo.GetValue(component);
-
-            if (fieldValue != null)
-            {
-                var countProperty = fieldInfo.FieldType.GetProperty("Count");
-                var itemCount = (int)countProperty!.GetValue(fieldValue);
-
-                if (itemCount > 0)
-                {
-                    return;
-                }
-            }
-
-            var genericArgument = fieldInfo.FieldType.GetGenericArguments()[0];
-            var components = component.GetComponents(genericArgument, attribute.FillOption, attribute.IncludeInactive);
-
-            try
-            {
-                // ReSharper disable once CoVariantArrayConversion
-                fieldValue = Activator.CreateInstance(fieldInfo.FieldType, components);
-            }
-            // The field doesn't have an IEnumerable constructor so we use ICollection.Add instead
-            catch (MissingMethodException)
-            {
-                try
-                {
-                    fieldValue = Activator.CreateInstance(fieldInfo.FieldType);
-                }
-                catch (MissingMethodException)
-                {
-                    LogNoConstructorError(fieldInfo);
-                    return;
-                }
-
-                var addMethod = fieldInfo.FieldType.GetMethod("Add");
-                var input = new object[1];
-
-                foreach (var item in components)
-                {
-                    input[0] = item;
-                    addMethod!.Invoke(fieldValue, input);
-                }
-            }
-
-            fieldInfo.SetValue(component, fieldValue);
-            Finish(component, fieldInfo);
-        }
-
-        private static void LogNoConstructorError(FieldInfo fieldInfo)
-        {
-            Debug.LogError($"{fieldInfo.FieldType.Name} ({fieldInfo.DeclaringType}.{fieldInfo.Name}) doesn't have a default constructor,"
-                + "nor an IEnumerable constructor."
-                + "\nPlease add at least 1 of those constructors or remove [AutoFill] attribute from this field");
-        }
-
-        private static void ProcessArrayField(MonoBehaviour component, FieldInfo fieldInfo, AutoFillAttribute attribute)
-        {
-            if (fieldInfo.GetValue(component) is Array { Length: > 0 })
+            if (!fieldInfo.TryGetAttribute(out AutoFillAttribute autoFill))
             {
                 return;
             }
 
-            var elementType = fieldInfo.FieldType.GetElementType();
-
-            if (!elementType?.IsSubclassOf(typeof(Component)) ?? true)
-            {
-                Debug.LogError($"{nameof(AutoFillAttribute)} can't be applied to {fieldInfo.DeclaringType}.{fieldInfo.Name}");
-                return;
-            }
-
-            fieldInfo.SetValue(component, component.GetComponents(elementType, attribute.FillOption, attribute.IncludeInactive));
+            property.objectReferenceValue = component.GetComponent(fieldInfo.FieldType, autoFill.FillOption, autoFill.IncludeInactive);
             Finish(component, fieldInfo);
         }
 
@@ -204,29 +182,6 @@ namespace Vun.UnityUtils
             EditorUtility.SetDirty(component);
             var fieldName = fieldInfo.Name.Replace("<", "").Replace(">k__BackingField", "");
             Debug.Log($"Filled {fieldName} of {component.name}");
-        }
-
-        private static Type GetGenericCollectionDefinition(Type type)
-        {
-            var collectionType = typeof(ICollection<>);
-
-            // Check all interfaces implemented by the type
-            foreach (var interfaceType in type.GetInterfaces())
-            {
-                if (!interfaceType.IsGenericType)
-                {
-                    continue;
-                }
-
-                var genericDefinition = interfaceType.GetGenericTypeDefinition();
-
-                if (collectionType.IsAssignableFrom(genericDefinition))
-                {
-                    return genericDefinition;
-                }
-            }
-
-            return null;
         }
     }
 }

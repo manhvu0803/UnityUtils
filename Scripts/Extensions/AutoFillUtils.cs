@@ -72,7 +72,7 @@ namespace Vun.UnityUtils
         /// Should be use in <c>OnValidate</c> or editor functions
         /// </summary>
         /// <param name="component">The search starting point</param>
-        /// <param name="target">If null or empty, find a component and assign to this</param>
+        /// <param name="target">If null or empty, find components and assign to this</param>
         public static void Fill<T>(
             this Component component,
             ref T[] target,
