@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Object = UnityEngine.Object;
+#if UNITY_6000_0_OR_NEWER
+using System.Threading.Tasks;
+#endif
 
 namespace Vun.UnityUtils.Pooling
 {

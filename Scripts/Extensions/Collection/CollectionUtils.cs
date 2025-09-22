@@ -141,6 +141,32 @@ namespace Vun.UnityUtils
             (list[indexA], list[indexB]) = (list[indexB], list[indexA]);
         }
 
+        public static void RemoveValues<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TValue value)
+        {
+            var buffer = ListPool<TKey>.Get();
+            dictionary.RemoveValues(value, buffer);
+            ListPool<TKey>.Release(buffer);
+        }
+
+        public static void RemoveValues<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TValue value, ICollection<TKey> buffer)
+        {
+            buffer.Clear();
+            var comparer = EqualityComparer<TValue>.Default;
+
+            foreach (var (key, otherValue) in dictionary)
+            {
+                if (comparer.Equals(value, otherValue))
+                {
+                    buffer.Add(key);
+                }
+            }
+
+            foreach (var key in buffer)
+            {
+                dictionary.Remove(key);
+            }
+        }
+
         #region Remove nulls
 
         /// <summary>

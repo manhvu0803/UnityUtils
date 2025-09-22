@@ -2,7 +2,8 @@
     "name": "Vun.UnityUtils.Editor",
     "rootNamespace": "Vun.UnityUtils.Editor",
     "references": [
-        "GUID:72db0867edeeb074284606b98f32cdb4"
+        "GUID:72db0867edeeb074284606b98f32cdb4",
+        "GUID:49818357e697641afb75d2f8acaf1861"
     ],
     "includePlatforms": [
         "Editor"
@@ -13,6 +14,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.settings-manager",
+            "expression": "0.0.0",
+            "define": "UNITY_SETTINGS_MANAGER"
+        }
+    ],
     "noEngineReferences": false
 }
