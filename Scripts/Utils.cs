@@ -86,5 +86,10 @@ namespace Vun.UnityUtils
             var y = UnityEngine.Random.Range(0, 1f);
             return (1 - x) * p1 + x * (1 - y) * p2 + x * y * p3;
         }
+
+        public static bool IsNullOrDestroyed(this object obj)
+        {
+            return obj == null || obj.Equals(null);
+        }
     }
 }
