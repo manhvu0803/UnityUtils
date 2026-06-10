@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Vun.UnityUtils
@@ -55,12 +56,12 @@ namespace Vun.UnityUtils
 
         /// <summary>
         /// A non-boxing but unsafe version of <see cref="Enum.HasFlag"/>.
-        /// Enable with <c>USE_UNSAFE</c> flag
+        /// Enable with <c>VUN_USE_UNSAFE</c> flag
         /// Support any enum with numeric backing type from <see cref="byte"/> to <see cref="long"/>,
         /// but will fail for larger type.
         /// Useful for Burst-compiled code
         /// </summary>
-#if USE_UNSAFE
+#if VUN_USE_UNSAFE
         public static unsafe bool ContainsFlag<T>(this T container, T flag) where T : unmanaged, Enum
         {
             switch (sizeof(T))
@@ -84,7 +85,7 @@ namespace Vun.UnityUtils
 #else
         public static bool ContainsFlag<T>(this T container, T flag) where T : unmanaged, Enum
         {
-            throw new NotImplementedException("USE_UNSAFE is not enabled");
+            throw new NotImplementedException("VUN_USE_UNSAFE is not enabled");
         }
 #endif
 

@@ -5,6 +5,8 @@ using System.Reflection;
 
 namespace Vun.UnityUtils
 {
+    // ReSharper disable LoopCanBeConvertedToQuery
+    // ReSharper disable MemberCanBePrivate.Global
     public static class ReflectionUtils
     {
         public static bool IsDerivedFromGeneric(this Type type, Type genericType, out Type genericParam, out int depth)
@@ -151,6 +153,29 @@ namespace Vun.UnityUtils
             }
 
             return true;
+        }
+
+        public static bool TryGetElementType(this FieldInfo fieldInfo, out Type elementType)
+        {
+            return fieldInfo.FieldType.TryGetElementType(out elementType);
+        }
+
+        public static bool TryGetElementType(this Type type, out Type elementType)
+        {
+            if (type.IsArray)
+            {
+                elementType = type.GetElementType();
+                return true;
+            }
+
+            if (type.IsGenericType)
+            {
+                elementType = type.GetGenericArguments()[0];
+                return true;
+            }
+
+            elementType = null;
+            return false;
         }
     }
 }

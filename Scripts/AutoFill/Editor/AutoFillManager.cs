@@ -1,15 +1,17 @@
-﻿#if ENABLE_AUTO_FILL
+﻿#if VUN_ENABLE_AUTO_FILL
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Vun.UnityUtils
+namespace Vun.UnityUtils.AutoFill.Editor
 {
     [InitializeOnLoad]
     public static class AutoFillManager
     {
+        private const BindingFlags FieldBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
         private static bool _isProcessing;
 
         static AutoFillManager()
@@ -84,61 +86,62 @@ namespace Vun.UnityUtils
         private static void ProcessComponent(MonoBehaviour component)
         {
             var serializedComponent = new SerializedObject(component);
-            var property = serializedComponent.GetIterator();
-            var lastProperty = property;
-            var hierarchy = new Stack<SerializedProperty>();
+            using var property = serializedComponent.GetIterator();
+            var hierarchy = new Stack<object>();
+            hierarchy.Push(component);
 
-            while (property.NextVisible(enterChildren: true))
+            while (property.NextVisible(enterChildren: !property.isArray))
             {
-                if (lastProperty.depth < property.depth)
+                // Base MonoBehaviour has depth of -1, so hierarchy depth is Count - 2
+                while (hierarchy.Count - 1 > property.depth)
                 {
-                    hierarchy.Push(lastProperty);
-                }
-                else
-                {
-                    PopToDepth(hierarchy, property.depth);
+                    hierarchy.Pop();
                 }
 
+                var parent = hierarchy.Peek();
+
+                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                 switch (property.propertyType)
                 {
                     case SerializedPropertyType.Generic when property.isArray:
                     {
-                        var parent = hierarchy.Count <= 0 ? component : hierarchy.Peek().managedReferenceValue;
                         ProcessArrayProperty(component, parent, property);
                         break;
                     }
                     case SerializedPropertyType.ObjectReference:
                     {
-                        var parent = hierarchy.Count <= 0 ? component : hierarchy.Peek().managedReferenceValue;
                         ProcessProperty(component, parent, property);
                         break;
                     }
                 }
 
-                lastProperty = property;
+                var fieldInfo = parent.GetType().GetField(property.name, FieldBindingFlags);
+
+                if (fieldInfo != null)
+                {
+                    hierarchy.Push(fieldInfo.GetValue(parent));
+                }
             }
 
             serializedComponent.ApplyModifiedProperties();
         }
 
-        private static void PopToDepth(Stack<SerializedProperty> hierarchy, int depth)
-        {
-            while (hierarchy.TryPeek(out var parentProperty) && parentProperty.depth > depth)
-            {
-                hierarchy.Pop();
-            }
-        }
-
-        private static void ProcessArrayProperty(MonoBehaviour component, object parentProperty, SerializedProperty property)
+        private static void ProcessArrayProperty(MonoBehaviour component, object parent, SerializedProperty property)
         {
             if (property.arraySize > 0)
             {
                 return;
             }
 
-            var fieldInfo = parentProperty.GetType().GetField(property.name);
+            var fieldInfo = parent.GetType().GetField(property.name, FieldBindingFlags);
 
-            if (!fieldInfo.FieldType.GetElementType()!.IsSubclassOf(typeof(Component)))
+            if (fieldInfo == null)
+            {
+                Debug.LogError($"Can't find {property.name} in {parent.GetType()}");
+                return;
+            }
+
+            if (!fieldInfo.TryGetElementType(out var elementType) || !elementType.IsSubclassOf(typeof(Component)))
             {
                 Debug.LogError($"{nameof(AutoFillAttribute)} can't be applied to {fieldInfo.DeclaringType}.{fieldInfo.Name}");
                 return;
@@ -149,21 +152,28 @@ namespace Vun.UnityUtils
                 return;
             }
 
-            var type = Type.GetType(property.arrayElementType);
-            var components = component.GetComponents(type, autoFill.FillOption, autoFill.IncludeInactive);
-            
+            var components = component.GetComponents(elementType, autoFill.FillOption, autoFill.IncludeInactive);
+            property.arraySize = components.Length;
+
+            for (var i = 0; i < components.Length; ++i)
+            {
+                var elementProperty = property.GetArrayElementAtIndex(i);
+                elementProperty.objectReferenceValue = components[i];
+            }
+
+            Finish(component, property, components);
         }
 
-        private static void ProcessProperty(MonoBehaviour component, object parentProperty, SerializedProperty property)
+        private static void ProcessProperty(MonoBehaviour component, object parent, SerializedProperty property)
         {
             if (property.objectReferenceValue != null)
             {
                 return;
             }
 
-            var fieldInfo = parentProperty.GetType().GetField(property.name);
+            var fieldInfo = parent.GetType().GetField(property.name, FieldBindingFlags);
 
-            if (!fieldInfo.FieldType.IsSubclassOf(typeof(Component)))
+            if (!fieldInfo!.FieldType.IsSubclassOf(typeof(Component)))
             {
                 Debug.LogError($"{nameof(AutoFillAttribute)} can't be applied to {fieldInfo.DeclaringType}.{fieldInfo.Name}");
                 return;
@@ -175,14 +185,30 @@ namespace Vun.UnityUtils
             }
 
             property.objectReferenceValue = component.GetComponent(fieldInfo.FieldType, autoFill.FillOption, autoFill.IncludeInactive);
-            Finish(component, fieldInfo);
+            Finish(component, property, property.objectReferenceValue);
         }
 
-        private static void Finish(MonoBehaviour component, FieldInfo fieldInfo)
+        private static void Finish(MonoBehaviour component, SerializedProperty property, UnityEngine.Object fieldValue)
+        {
+            if (fieldValue != null)
+            {
+                Finish(component, property, fieldValue.ToString());
+            }
+        }
+
+        private static void Finish(MonoBehaviour component, SerializedProperty property, Array array)
+        {
+            if (array is { Length: > 0 })
+            {
+                Finish(component, property, $"{array.Length} item(s)");
+            }
+        }
+
+        private static void Finish(MonoBehaviour component, SerializedProperty property, string valueString)
         {
             EditorUtility.SetDirty(component);
-            var fieldName = fieldInfo.Name.Replace("<", "").Replace(">k__BackingField", "");
-            Debug.Log($"Filled {fieldName} of {component.name}");
+            var path = property.propertyPath.Replace(">k__BackingField", "").Replace("<", "");
+            Debug.Log($"<color=green>Filled {component.gameObject.name}.{component.GetType().Name}.{path} with {valueString}</color>");
         }
     }
 }
