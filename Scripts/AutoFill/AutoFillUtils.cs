@@ -35,14 +35,15 @@ namespace Vun.UnityUtils
                 FillOption.FromChildren => component.GetComponentInChildren<T>(includeInactive),
                 FillOption.FromParent => component.GetComponentInParent<T>(includeInactive),
                 FillOption.FromHierarchy => component.GetComponentInHierarchy<T>(includeInactive),
-                FillOption.FromScene => Object.FindAnyObjectByType<T>(GetEnum(includeInactive)),
-                _ => null
+                FillOption.FromScene => Object.FindAnyObjectByType<T>(includeInactive.GetFindObjectEnum()),
+                FillOption.FromAssetDatabase => AssetFillUtils.FindAsset<T>(),
+                _ => target
             };
         }
 
         public static T GetComponentInHierarchy<T>(this Component component, bool includeInactive)
         {
-            return component.transform.root.GetComponentInParent<T>(includeInactive);
+            return component.transform.root.GetComponentInChildren<T>(includeInactive);
         }
 
         public static Object GetComponent(
@@ -57,7 +58,8 @@ namespace Vun.UnityUtils
                 FillOption.FromChildren => component.GetComponentInChildren(type, includeInactive),
                 FillOption.FromParent => component.GetComponentInParent(type, includeInactive),
                 FillOption.FromHierarchy => component.GetComponentInHierarchy(type, includeInactive),
-                FillOption.FromScene => Object.FindAnyObjectByType(type, GetEnum(includeInactive)),
+                FillOption.FromScene => Object.FindAnyObjectByType(type, includeInactive.GetFindObjectEnum()),
+                FillOption.FromAssetDatabase => AssetFillUtils.FindAsset(type),
                 _ => null
             };
         }
@@ -94,7 +96,8 @@ namespace Vun.UnityUtils
                 FillOption.FromChildren => component.GetComponentsInChildren<T>(includeInactive),
                 FillOption.FromParent => component.GetComponentsInParent<T>(includeInactive),
                 FillOption.FromHierarchy => component.GetComponentsInHierarchy<T>(includeInactive),
-                FillOption.FromScene => Object.FindObjectsByType<T>(GetEnum(includeInactive), sortMode),
+                FillOption.FromScene => Object.FindObjectsByType<T>(includeInactive.GetFindObjectEnum(), sortMode),
+                FillOption.FromAssetDatabase => AssetFillUtils.FindAssets<T>(),
                 _ => target
             };
         }
@@ -138,7 +141,7 @@ namespace Vun.UnityUtils
                 return components;
             }
 
-            var objects = Object.FindObjectsByType(type, includeInactive.GetEnum(), sortMode);
+            var objects = Object.FindObjectsByType(type, includeInactive.GetFindObjectEnum(), sortMode);
             return CreateArray(objects);
         }
 
@@ -182,7 +185,7 @@ namespace Vun.UnityUtils
             target.AddRange(component.GetIfNull((T[])null, option, includeInactive, sortMode));
         }
 
-        public static FindObjectsInactive GetEnum(this bool includeInactive)
+        public static FindObjectsInactive GetFindObjectEnum(this bool includeInactive)
         {
             return includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude;
         }

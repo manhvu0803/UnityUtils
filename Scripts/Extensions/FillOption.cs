@@ -33,6 +33,12 @@ namespace Vun.UnityUtils
         /// From every object in the same scene.
         /// Equivalent to <see cref="UnityEngine.Object.FindAnyObjectByType{T}()"/>
         /// </summary>
-        FromScene
+        FromScene,
+
+        /// <summary>
+        /// From every object in the same scene.
+        /// Only work in the Editor
+        /// </summary>
+        FromAssetDatabase
     }
 }
