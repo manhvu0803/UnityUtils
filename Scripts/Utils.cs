@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Vun.UnityUtils
@@ -21,7 +22,7 @@ namespace Vun.UnityUtils
         /// Read-only array of 2D coordinate offsets starting from the top (0, 1) and goes clockwise.
         /// Useful for checking adjacent coordinates on a grid
         /// </summary>
-        public static ReadOnlyMemory<Vector2Int> Offsets2d => Offset2dArray;
+        public static IReadOnlyList<Vector2Int> Offsets2d => Offset2dArray;
 
         private struct Wrapper<T>
         {
@@ -55,10 +56,12 @@ namespace Vun.UnityUtils
 
         /// <summary>
         /// A non-boxing but unsafe version of <see cref="Enum.HasFlag"/>.
+        /// Enable with <c>VUN_USE_UNSAFE</c> flag
         /// Support any enum with numeric backing type from <see cref="byte"/> to <see cref="long"/>,
         /// but will fail for larger type.
         /// Useful for Burst-compiled code
         /// </summary>
+#if VUN_USE_UNSAFE
         public static unsafe bool ContainsFlag<T>(this T container, T flag) where T : unmanaged, Enum
         {
             switch (sizeof(T))
@@ -79,6 +82,12 @@ namespace Vun.UnityUtils
                     throw new ArgumentException("Invalid enum backing type");
             }
         }
+#else
+        public static bool ContainsFlag<T>(this T container, T flag) where T : unmanaged, Enum
+        {
+            throw new NotImplementedException("VUN_USE_UNSAFE is not enabled");
+        }
+#endif
 
         public static Vector3 RandomPointInTriangle(in Vector3 p1, in Vector3 p2, in Vector3 p3)
         {

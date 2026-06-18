@@ -5,6 +5,8 @@ using Object = UnityEngine.Object;
 
 namespace Vun.UnityUtils
 {
+    // ReSharper disable InvalidXmlDocComment
+    // ReSharper disable MemberCanBePrivate.Global
     public static class AutoFillUtils
     {
         #region Single component
@@ -72,7 +74,7 @@ namespace Vun.UnityUtils
         /// Should be use in <c>OnValidate</c> or editor functions
         /// </summary>
         /// <param name="component">The search starting point</param>
-        /// <param name="target">If null or empty, find a component and assign to this</param>
+        /// <param name="target">If null or empty, find components and assign to this</param>
         public static void Fill<T>(
             this Component component,
             ref T[] target,
@@ -114,7 +116,7 @@ namespace Vun.UnityUtils
             component.transform.root.GetComponentsInChildren(includeInactive, buffer);
         }
 
-        public static Array GetComponents(
+        public static Component[] GetComponents(
             this Component component,
             Type type,
             FillOption option = FillOption.FromChildren,
@@ -133,11 +135,11 @@ namespace Vun.UnityUtils
             if (components.Length > 0)
             {
                 // ReSharper disable once CoVariantArrayConversion
-                return CreateArray(type, components);
+                return components;
             }
 
-            var objects = Object.FindObjectsByType(type, GetEnum(includeInactive), sortMode);
-            return CreateArray(type, objects);
+            var objects = Object.FindObjectsByType(type, includeInactive.GetEnum(), sortMode);
+            return CreateArray(objects);
         }
 
         public static Component[] GetComponentsInHierarchy(this Component component, Type type, bool includeInactive = true)
@@ -145,13 +147,13 @@ namespace Vun.UnityUtils
             return component.transform.root.GetComponentsInChildren(type, includeInactive);
         }
 
-        private static Array CreateArray(Type type, Object[] objects)
+        private static Component[] CreateArray(Object[] objects)
         {
-            var array = Array.CreateInstance(type, objects.Length);
+            var array = new Component[objects.Length];
 
             for (var i = 0; i < objects.Length; i++)
             {
-                array.SetValue(objects[i], i);
+                array[i] = objects[i] as Component;
             }
 
             return array;

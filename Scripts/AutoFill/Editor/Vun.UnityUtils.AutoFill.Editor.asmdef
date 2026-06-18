@@ -1,0 +1,25 @@
+{
+    "name": "Vun.UnityUtils.AutoFill.Editor",
+    "rootNamespace": "Vun.UnityUtils.AutoFill.Editor",
+    "references": [
+        "GUID:72db0867edeeb074284606b98f32cdb4",
+        "GUID:8b71b450cab035948a31228308089239"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.settings-manager",
+            "expression": "0.0.0",
+            "define": "UNITY_SETTINGS_MANAGER"
+        }
+    ],
+    "noEngineReferences": false
+}
